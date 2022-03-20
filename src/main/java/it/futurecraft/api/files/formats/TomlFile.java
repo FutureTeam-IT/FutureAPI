@@ -2,6 +2,7 @@ package it.futurecraft.api.files.formats;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
+import it.futurecraft.api.files.FileManager;
 import it.futurecraft.api.files.PluginFile;
 
 import java.io.File;
@@ -30,7 +31,7 @@ public class TomlFile<T> implements PluginFile<T> {
 
     @Override
     public T reload() {
-        data = new Toml().read(new File(path.toFile(), name + ".toml"))
+        data = new Toml().read(FileManager.toJavaFile(path, name, "toml"))
                 .to(model);
 
         return data;
