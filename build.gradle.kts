@@ -7,8 +7,6 @@ plugins {
 group = "it.futurecraft"
 version = "0.0.2-SNAPSHOT"
 
-println(System.getenv("SIGNING_KEY"))
-
 repositories {
     mavenCentral()
 }
