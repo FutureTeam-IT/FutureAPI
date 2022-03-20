@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public class TomlFile<T> implements PluginFile<T> {
+    /**
+     * The file write for toml format.
+     */
     public static final TomlWriter WRITER = new TomlWriter();
 
     private T data;
