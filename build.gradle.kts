@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "it.futurecraft"
-version = "0.0.3"
+version = "0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
