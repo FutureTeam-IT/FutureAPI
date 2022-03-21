@@ -14,10 +14,11 @@ public class FileManager {
 
     /**
      * Load a new TOML file.
-     * @param path The path to the file directory.
-     * @param name The file name.
+     *
+     * @param path  The path to the file directory.
+     * @param name  The file name.
      * @param model The class object of the file model.
-     * @param <T> The file model type.
+     * @param <T>   The file model type.
      * @return The PluginFile instance of the file.
      */
     public static <T> PluginFile<T> toml(@NotNull Path path, @NotNull String name, @NotNull Class<T> model) {
@@ -36,8 +37,9 @@ public class FileManager {
 
     /**
      * Create a file object.
-     * @param path The path to the file directory.
-     * @param name The file name.
+     *
+     * @param path      The path to the file directory.
+     * @param name      The file name.
      * @param extension The file extension.
      * @return The file object.
      */

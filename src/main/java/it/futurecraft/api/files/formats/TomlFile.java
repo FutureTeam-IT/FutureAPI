@@ -9,16 +9,21 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+/**
+ * Represent a TOML file.
+ *
+ * @param <T> The model representing the file content.
+ * @since v0.1.1
+ */
 public class TomlFile<T> implements PluginFile<T> {
     /**
      * The file write for toml format.
      */
     public static final TomlWriter WRITER = new TomlWriter();
-
-    private T data;
     private final Class<T> model;
     private final Path path;
     private final String name;
+    private T data;
 
     public TomlFile(Path path, String name, Class<T> model, T data) {
         this.data = data;
