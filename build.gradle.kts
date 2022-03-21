@@ -68,6 +68,7 @@ publishing {
                     developer {
                         id.set("maxigame99")
                         name.set("Maxigame99")
+                        email.set("maxi2004.ben@gmail.com")
                     }
 
                     developer {
