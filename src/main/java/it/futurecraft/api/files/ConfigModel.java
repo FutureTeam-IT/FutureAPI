@@ -27,7 +27,11 @@ public interface ConfigModel {
         String username;
         String password;
 
-
+        /**
+         * Create the database connection URL in JDBC format.
+         *
+         * @return The database connection URL
+         */
         public String toURL() {
             return "jdbc:mysql://" + hostname + ":" + port + "/" + database;
         }
