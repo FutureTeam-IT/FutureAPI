@@ -1,24 +1,26 @@
 name: Feature request
 about: Suggest an idea for this project
 title: "[FEATURE]:"
-labels: enhancement
+labels:
+  - enhancement
 assignees:
   - danieleguglietti
 body:
   - type: markdown
     attributes:
-      values: |
+      value: |
         Thanks for taking time to help us to improve our library with your ideas.
   - type: textarea
     id: idea
-    attribures:
+    attributes:
       label: Your Idea
       description: Tell us all about what you expect to see in the library!
       placeholder: I'd like you to add...
+      render: markdown
     validations:
       required: true
   - type: markdown
     attributes:
-      values: |
+      value: |
         ## Tasks
         Add a tasks list.
