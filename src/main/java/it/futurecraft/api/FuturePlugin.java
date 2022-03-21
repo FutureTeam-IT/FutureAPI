@@ -1,9 +1,12 @@
 package it.futurecraft.api;
 
+import it.futurecraft.api.files.ConfigModel;
+import it.futurecraft.api.files.PluginFile;
+
 /**
  * A plugin which uses FutureAPI.
  */
-public interface FuturePlugin {
+public interface FuturePlugin<C extends ConfigModel> {
     /**
      * Initialize the plugin.
      * <p>
@@ -17,4 +20,11 @@ public interface FuturePlugin {
      * It's the first method called on server shutdown.
      */
     void destroy();
+
+    /**
+     * Get the plugin configuration file.
+     *
+     * @return The configuration file.
+     */
+    PluginFile<C> getConfig();
 }
