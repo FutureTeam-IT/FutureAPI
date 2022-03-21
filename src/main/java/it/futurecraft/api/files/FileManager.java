@@ -9,8 +9,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FileManager {
-    private static Map<String, PluginFile<?>> files = new HashMap<>();
+public final class FileManager {
+    private static final Map<String, PluginFile<?>> files = new HashMap<>();
 
     /**
      * Load a new TOML file.
@@ -26,8 +26,7 @@ public class FileManager {
             return (PluginFile<T>) files.get(name);
         }
 
-        T data = new Toml().read(toJavaFile(path, name, "toml"))
-                .to(model);
+        T data = new Toml().read(toJavaFile(path, name, "toml")).to(model);
 
         PluginFile<T> file = new TomlFile<>(path, name, model, data);
         files.put(name, file);
