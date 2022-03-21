@@ -16,6 +16,5 @@ body:
       label: Your Idea
       description: Tell us all about what you expect to see in the library!
       placeholder: I'd like you to add...
-      render: Markdown
     validations:
       required: true
