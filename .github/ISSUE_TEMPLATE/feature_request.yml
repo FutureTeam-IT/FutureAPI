@@ -19,15 +19,3 @@ body:
       render: Markdown
     validations:
       required: true
-  - type: textarea
-    id: tasks
-    attributes:
-      label: Tasks
-      description: Help us organizing you idea with a task list!
-      placeholder: |
-        - [ ] Command Executor
-      value: |
-        - [ ]
-      render: Markdown
-    validations:
-      required: false
