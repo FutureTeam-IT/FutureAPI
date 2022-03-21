@@ -44,4 +44,19 @@ public class TomlFile<T> implements PluginFile<T> {
     public T getData() {
         return data;
     }
+
+    @Override
+    public Path getPath() {
+        return path;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getExtension() {
+        return "toml";
+    }
 }
