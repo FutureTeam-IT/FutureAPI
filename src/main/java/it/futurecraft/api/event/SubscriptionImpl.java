@@ -2,6 +2,9 @@ package it.futurecraft.api.event;
 
 import java.util.function.Consumer;
 
+/**
+ * @since v0.2.1
+ */
 class SubscriptionImpl<E extends FutureEvent> implements Subscription<E> {
     private Consumer<E> consumer;
     private Class<E> event;
@@ -23,6 +26,6 @@ class SubscriptionImpl<E extends FutureEvent> implements Subscription<E> {
 
     @Override
     public void unsubscribe() {
-
+        // TODO: Implement unsubscribe logic.
     }
 }
