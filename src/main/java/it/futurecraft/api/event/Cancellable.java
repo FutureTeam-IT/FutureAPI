@@ -13,6 +13,7 @@ public interface Cancellable {
 
     /**
      * Check whether the event has been cancelled or not.
+     *
      * @return <code>true</code> If the event has been cancelled.
      */
     boolean isCancelled();
