@@ -5,18 +5,18 @@ import java.util.function.Consumer;
 /**
  * @since v0.2.1
  */
-class SubscriptionImpl<E extends FutureEvent> implements Subscription<E> {
-    private Consumer<E> consumer;
+final class SubscriptionImpl<E extends FutureEvent> implements Subscription<E> {
+    private Consumer<E> handler;
     private Class<E> event;
 
-    public SubscriptionImpl(Consumer<E> consumer, Class<E> event) {
-        this.consumer = consumer;
+    public SubscriptionImpl(Class<E> event, Consumer<E> consumer) {
+        this.handler = consumer;
         this.event = event;
     }
 
     @Override
     public Consumer<E> getHandler() {
-        return consumer;
+        return handler;
     }
 
     @Override
