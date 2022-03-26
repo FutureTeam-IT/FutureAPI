@@ -45,5 +45,5 @@ public interface EventBus {
      * @param <E>   The event type.
      * @return The subscription list.
      */
-    <E extends FutureEvent> List<Subscription<E>> getSubscriptions(@NotNull Class<E> event);
+    <E extends FutureEvent> List<Subscription<? super E>> getSubscriptions(@NotNull Class<E> event);
 }
