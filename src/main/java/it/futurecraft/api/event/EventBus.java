@@ -19,7 +19,7 @@ public interface EventBus {
      * @param <E>     The event type.
      * @return The subscription to the event.
      */
-    <E extends FutureEvent> Subscription<E> subscribe(@NotNull Class<E> event, @NotNull Consumer<E> handler);
+    <E extends FutureEvent> Subscription<E> subscribe(@NotNull Class<E> event, @NotNull Consumer<? super E> handler);
 
     /**
      * Dispatch an event.

@@ -15,7 +15,7 @@ public interface Subscription<E extends FutureEvent> {
      * @return The consumer object.
      * @since v0.2.1
      */
-    Consumer<E> getHandler();
+    Consumer<? super E> getHandler();
 
     /**
      * Get the event class from the subscription.
