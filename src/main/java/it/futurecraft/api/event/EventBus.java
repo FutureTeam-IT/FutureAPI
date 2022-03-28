@@ -12,6 +12,15 @@ import java.util.function.Consumer;
  */
 public interface EventBus {
     /**
+     * Create a new instance of the event bus.
+     *
+     * @return The event bus instance.
+     */
+    static EventBus create() {
+        return new EventSubImpl();
+    }
+
+    /**
      * Subscribe a consumer function to the event.
      *
      * @param event   The event to subscribe to.
