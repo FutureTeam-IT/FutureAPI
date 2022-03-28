@@ -17,6 +17,7 @@ public interface FutureEvent {
 
     /**
      * The execution priority for the event handlers.
+     * A handler with a lower priority will be executed before.
      *
      * @since v0.2.3
      */
