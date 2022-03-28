@@ -26,6 +26,13 @@ public interface Subscription<E extends FutureEvent> {
     Class<E> getEvent();
 
     /**
+     * Get the priority of the handler.
+     *
+     * @return The priority value.
+     */
+    FutureEvent.Priority getPriority();
+
+    /**
      * Unsubscribe from the event listening.
      */
     void unsubscribe();
