@@ -12,14 +12,14 @@ final class SubscriptionImpl<E extends FutureEvent> implements Subscription<E> {
     private final Class<E> event;
     private final Priority priority;
 
-    public SubscriptionImpl(Consumer<? super E> handler, Class<E> event, Priority priority) {
+    public SubscriptionImpl(Class<E> event, Consumer<? super E> handler, Priority priority) {
         this.handler = handler;
         this.event = event;
         this.priority = priority;
     }
 
     public SubscriptionImpl(Class<E> event, Consumer<? super E> consumer) {
-        this(consumer, event, Priority.LOW);
+        this(event, consumer, Priority.LOW);
     }
 
     @Override

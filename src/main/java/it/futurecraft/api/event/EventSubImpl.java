@@ -2,10 +2,7 @@ package it.futurecraft.api.event;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -18,13 +15,13 @@ final class EventSubImpl implements EventBus {
         this.subscriptions = new HashMap<>();
     }
 
-    private static <T extends R, R> List<R> cast(List<T> list) {
+    private static <T extends R, R> List<R> castList(List<T> list) {
         return (List<R>) list;
     }
 
     @Override
     public <E extends FutureEvent> Subscription<E> subscribe(@NotNull Class<E> event, @NotNull Consumer<? super E> handler) {
-        List<Subscription<? super E>> subscriptions = cast(this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>()));
+        List<Subscription<? super E>> subscriptions = castList(this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>()));
 
         Subscription<E> subscription = new SubscriptionImpl<>(event, handler);
         subscriptions.add(subscription);
@@ -33,12 +30,22 @@ final class EventSubImpl implements EventBus {
     }
 
     @Override
-    public <E extends FutureEvent> void dispatch(@NotNull E event) {
-        List<Subscription<? super E>> subscriptions = cast(this.subscriptions.computeIfAbsent(event.getClass(), key -> new ArrayList<>()));
+    public <E extends FutureEvent> Subscription<E> subscribe(@NotNull Class<E> event, @NotNull Consumer<? super E> handler, FutureEvent.@NotNull Priority priority) {
+        List<Subscription<? super E>> subscriptions = castList(this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>()));
 
-        for (final Subscription<? super E> subscription : subscriptions) {
-            subscription.getHandler().accept(event);
-        }
+        Subscription<E> subscription = new SubscriptionImpl<>(event, handler, priority);
+        subscriptions.add(subscription);
+
+        return subscription;
+    }
+
+    @Override
+    public <E extends FutureEvent> void dispatch(@NotNull E event) {
+        List<Subscription<? super E>> subscriptions = castList(this.subscriptions.computeIfAbsent(event.getClass(), key -> new ArrayList<>()));
+
+        subscriptions.stream()
+                .sorted(Comparator.comparing(Subscription::getPriority))
+                .forEach(subscription -> subscription.getHandler().accept(event));
     }
 
     @Override
@@ -48,6 +55,6 @@ final class EventSubImpl implements EventBus {
 
     @Override
     public <E extends FutureEvent> List<Subscription<? super E>> getSubscriptions(@NotNull Class<E> event) {
-        return cast(this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>()));
+        return castList(this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>()));
     }
 }
