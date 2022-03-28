@@ -29,6 +29,7 @@ public interface Subscription<E extends FutureEvent> {
      * Get the priority of the handler.
      *
      * @return The priority value.
+     * @since v0.2.3
      */
     FutureEvent.Priority getPriority();
 
