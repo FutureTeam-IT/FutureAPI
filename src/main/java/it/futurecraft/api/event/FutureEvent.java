@@ -14,4 +14,11 @@ public interface FutureEvent {
      * @return The plugin instance.
      */
     FuturePlugin<?> getPlugin();
+
+    /**
+     * The execution priority for the event handlers.
+     *
+     * @since v0.2.3
+     */
+    enum Priority {LOW, NORMAL, HIGH, MONITOR}
 }
