@@ -8,10 +8,10 @@ import java.util.function.Consumer;
 /**
  * @since v0.2.2
  */
-final class EventSubImpl implements EventBus {
+final class EventBusImpl implements EventBus {
     private final Map<Class<? extends FutureEvent>, List<Subscription<? super FutureEvent>>> subscriptions;
 
-    public EventSubImpl() {
+    public EventBusImpl() {
         this.subscriptions = new HashMap<>();
     }
 

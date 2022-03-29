@@ -17,7 +17,7 @@ public interface EventBus {
      * @return The event bus instance.
      */
     static EventBus create() {
-        return new EventSubImpl();
+        return new EventBusImpl();
     }
 
     /**
