@@ -11,15 +11,17 @@ final class SubscriptionImpl<E extends FutureEvent> implements Subscription<E> {
     private final Consumer<? super E> handler;
     private final Class<E> event;
     private final Priority priority;
+    private final EventBusImpl bus;
 
-    public SubscriptionImpl(Class<E> event, Consumer<? super E> handler, Priority priority) {
+    public SubscriptionImpl(Class<E> event, Consumer<? super E> handler, Priority priority, EventBusImpl bus) {
         this.handler = handler;
         this.event = event;
         this.priority = priority;
+        this.bus = bus;
     }
 
-    public SubscriptionImpl(Class<E> event, Consumer<? super E> consumer) {
-        this(event, consumer, Priority.LOW);
+    public SubscriptionImpl(Class<E> event, Consumer<? super E> consumer, EventBusImpl bus) {
+        this(event, consumer, Priority.LOW, bus);
     }
 
     @Override
@@ -39,6 +41,6 @@ final class SubscriptionImpl<E extends FutureEvent> implements Subscription<E> {
 
     @Override
     public void unsubscribe() {
-        // TODO: Implement unsubscribe logic.
+        bus.unsubscribe(this);
     }
 }

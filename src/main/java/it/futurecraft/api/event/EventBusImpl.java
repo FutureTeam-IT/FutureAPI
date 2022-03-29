@@ -23,7 +23,7 @@ final class EventBusImpl implements EventBus {
     public <E extends FutureEvent> Subscription<E> subscribe(@NotNull Class<E> event, @NotNull Consumer<? super E> handler) {
         List<Subscription<? super E>> subscriptions = castList(this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>()));
 
-        Subscription<E> subscription = new SubscriptionImpl<>(event, handler);
+        Subscription<E> subscription = new SubscriptionImpl<>(event, handler, this);
         subscriptions.add(subscription);
 
         return subscription;
@@ -33,7 +33,7 @@ final class EventBusImpl implements EventBus {
     public <E extends FutureEvent> Subscription<E> subscribe(@NotNull Class<E> event, @NotNull Consumer<? super E> handler, FutureEvent.@NotNull Priority priority) {
         List<Subscription<? super E>> subscriptions = castList(this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>()));
 
-        Subscription<E> subscription = new SubscriptionImpl<>(event, handler, priority);
+        Subscription<E> subscription = new SubscriptionImpl<>(event, handler, priority, this);
         subscriptions.add(subscription);
 
         return subscription;
@@ -43,9 +43,7 @@ final class EventBusImpl implements EventBus {
     public <E extends FutureEvent> void dispatch(@NotNull E event) {
         List<Subscription<? super E>> subscriptions = castList(this.subscriptions.computeIfAbsent(event.getClass(), key -> new ArrayList<>()));
 
-        subscriptions.stream()
-                .sorted(Comparator.comparing(Subscription::getPriority))
-                .forEach(subscription -> subscription.getHandler().accept(event));
+        subscriptions.stream().sorted(Comparator.comparing(Subscription::getPriority)).forEach(subscription -> subscription.getHandler().accept(event));
     }
 
     @Override
@@ -56,5 +54,16 @@ final class EventBusImpl implements EventBus {
     @Override
     public <E extends FutureEvent> List<Subscription<? super E>> getSubscriptions(@NotNull Class<E> event) {
         return castList(this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>()));
+    }
+
+    <E extends FutureEvent> void unsubscribe(Subscription<E> subscription) {
+        Class<E> event = subscription.getEvent();
+        List<Subscription<? super E>> subscriptions = castList((this.subscriptions.computeIfAbsent(event, key -> new ArrayList<>())));
+
+        if (subscriptions.size() == 0) {
+            return;
+        }
+
+        subscriptions.remove(subscription);
     }
 }
