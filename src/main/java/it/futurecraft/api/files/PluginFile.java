@@ -44,7 +44,7 @@ public abstract class PluginFile<T> {
      * @return The data object
      */
     public T getData() {
-        return null;
+        return this.data;
     }
 
     public void setData(@NotNull T data) {
