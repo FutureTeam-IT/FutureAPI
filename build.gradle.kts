@@ -5,14 +5,16 @@ plugins {
 }
 
 group = "it.futurecraft"
-version = "0.2.4"
+version = "0.3.0"
 
 repositories {
     mavenCentral()
+    maven("https://libraries.minecraft.net")
 }
 
 dependencies {
     implementation("net.kyori:adventure-api:4.10.1")
+    implementation("com.mojang:brigadier:1.0.18")
 
     implementation("com.moandjiezana.toml:toml4j:0.7.2")
 
