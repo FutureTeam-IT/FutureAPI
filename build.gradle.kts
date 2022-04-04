@@ -10,11 +10,13 @@ version = "0.3.0"
 repositories {
     mavenCentral()
     maven("https://libraries.minecraft.net")
+    maven("https://papermc.io/repo/repository/maven-public/")
 }
 
 dependencies {
     implementation("net.kyori:adventure-api:4.10.1")
     implementation("com.mojang:brigadier:1.0.18")
+    implementation("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT");
 
     implementation("com.moandjiezana.toml:toml4j:0.7.2")
 
