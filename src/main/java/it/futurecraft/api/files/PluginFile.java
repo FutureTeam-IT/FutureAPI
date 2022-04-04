@@ -31,6 +31,8 @@ public abstract class PluginFile<T> {
      */
     public abstract void save() throws IOException;
 
+    public abstract void load();
+
     /**
      * Reload the file.
      *
