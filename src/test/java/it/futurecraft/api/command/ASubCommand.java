@@ -3,6 +3,7 @@ package it.futurecraft.api.command;
 import java.util.*;
 
 public class ASubCommand {
+    private static final java.util.Collections Collections = ;
     private final String permission;
     private final List<String> aliases = new ArrayList<>();
     protected final HashMap<String,ASubCommand> subsByAlias = new HashMap<>();

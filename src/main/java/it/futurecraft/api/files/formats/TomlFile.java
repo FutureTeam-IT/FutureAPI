@@ -5,6 +5,7 @@ import com.moandjiezana.toml.TomlWriter;
 import it.futurecraft.api.files.FileManager;
 import it.futurecraft.api.files.PluginFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -27,11 +28,6 @@ public final class TomlFile<T> extends PluginFile<T> {
     @Override
     public void save() throws IOException {
         WRITER.write(getData(), FileManager.toJavaFile(getPath(), getName(), "toml"));
-    }
-
-    @Override
-    public void load() {
-
     }
 
     @Override
