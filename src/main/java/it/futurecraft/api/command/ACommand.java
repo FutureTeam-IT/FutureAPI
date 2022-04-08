@@ -7,22 +7,21 @@ import java.util.List;
 
 public class ACommand extends ASubCommand {
 
-     /**
+    /**
      *
      * @param commandName - Name of the command (example = "heal")
-     * @param aliases     - List of the alias or null
-     * @param permission  - Create a permission for the command or null
-     * @param subs        - List of the sub commands
+     * @param aliases - List of the alias or null
+     * @param permission - Create a permission for the command or null
+     * @param subs - List of the sub commands
      */
     public ACommand(String commandName, List<String> aliases, String permission, ASubCommand... subs) {
-        super(aliases, permission, subs);
-        if (commandName == null || commandName.isEmpty())
+        super(aliases,permission,subs);
+        if (commandName==null || commandName.isEmpty())
             throw new NullPointerException();
         if (commandName.contains(" "))
-            throw new IllegalArgumentException("Command Name '" + commandName + "' contains spaces");
+            throw new IllegalArgumentException("Command Name '"+commandName+"' contains spaces");
         this.name = commandName.toLowerCase();
     }
-
     private final String name;
 
     /**
@@ -33,16 +32,17 @@ public class ACommand extends ASubCommand {
     }
 
 
+
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         ArrayList<String> params = new ArrayList<>();
-        if (!hasPermission(sender))
+        if(!hasPermission(sender))
             return params;
         if (playersOnly() && !(sender instanceof Player))
             return params;
         params.addAll(Arrays.asList(args));
 
-        return onTab(sender, label, args);
+        return onTab(sender,label,args);
     }
 
 
@@ -59,8 +59,8 @@ public class ACommand extends ASubCommand {
         ArrayList<String> params = new ArrayList<>();
         Collections.addAll(params, args);
 
-        if (playersOnly()) onCmd((Player) sender, label, args);
-        else onCmd(sender, label, args);
+        if (playersOnly()) onCmd((Player)sender,label,args);
+        else onCmd(sender,label,args);
         return true;
     }
 }
