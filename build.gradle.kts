@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     implementation("net.kyori:adventure-api:4.10.1")
-    implementation("com.mojang:brigadier:1.0.18")
+    compileOnly("com.mojang:brigadier:1.0.18")
 
     implementation("com.moandjiezana.toml:toml4j:0.7.2")
 
