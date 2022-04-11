@@ -1,9 +1,7 @@
-package it.futurecraft.api.util;
+package it.futurecraft.api.paper.util;
 
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 /**
  * Represents the protocol version the server is running on.
@@ -56,7 +54,8 @@ public enum ProtocolVersion {
     v1_8_3(47, "1.8.3"),
     v1_8_2(47, "1.8.2"),
     v1_8_1(47, "1.8.1"),
-    v1_8(47, "1.8");
+    v1_8(47, "1.8"),
+    UNKOWN(-1, "UNKOWN");
 
     /**
      * The id of the version.
@@ -82,22 +81,21 @@ public enum ProtocolVersion {
     /**
      * Get the protocol version from the server instance.
      *
-     * @param server The instance of the server.
      * @return The protocol version of the server.
      */
-    public static Optional<ProtocolVersion> getCurrentVersion(@Nullable Object server) {
-        return Optional.ofNullable(server).map(SERVER -> {
-            Class<?> craftServer = SERVER.getClass();
-            String packageName = craftServer.getPackage().getName();
+    public static ProtocolVersion getCurrentVersion() {
+        Class<?> server = Bukkit.getServer().getClass();
+        String packageName = server.getPackage().getName();
 
-            String version = packageName.substring(packageName.lastIndexOf('.') + 1).replace("R", "");
+        String version = packageName
+                .substring(packageName.lastIndexOf('.') + 1)
+                .replace("_", "");
 
-            try {
-                return ProtocolVersion.valueOf(version);
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
-        });
+        try {
+            return valueOf(version);
+        } catch (IllegalArgumentException e) {
+            return UNKOWN;
+        }
     }
 
     /**

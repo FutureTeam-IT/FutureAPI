@@ -5,7 +5,6 @@ import com.moandjiezana.toml.TomlWriter;
 import it.futurecraft.api.files.FileManager;
 import it.futurecraft.api.files.PluginFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
