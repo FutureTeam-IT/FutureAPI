@@ -1,6 +1,6 @@
-include("future-api")
-include("future-api-paper")
-include("future-api-velocity")
+include("futureapi-core")
+include("futureapi-paper")
+include("futureapi-velocity")
 
 pluginManagement {
     repositories {
@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "future-api-lib"
+rootProject.name = "futureapi"
