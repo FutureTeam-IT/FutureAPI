@@ -19,10 +19,14 @@ public abstract class AbstractCommand<S extends Invoker> implements Command<S, L
     private final Permission<S> permission;
     private final List<Command<S, ?>> subcommands;
 
-    public AbstractCommand(@NotNull String name, @Nullable String permission) {
+    private AbstractCommand(@NotNull String name, @Nullable String permission) {
         this.name = name;
         this.permission = permission == null ? null : new Permission<>(permission);
         this.subcommands = new ArrayList<>();
+    }
+
+    public AbstractCommand(@NotNull String name) {
+        this(name, null);
     }
 
     @Override

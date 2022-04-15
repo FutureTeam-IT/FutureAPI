@@ -11,11 +11,10 @@ import java.nio.file.Path;
  * @param <T> The model representing the file content.
  */
 public abstract class PluginFile<T> {
-    private T data;
     protected final Class<T> model;
-
     private final Path path;
     private final String name;
+    private T data;
 
     public PluginFile(@NotNull Path path, @NotNull String name, @NotNull Class<T> model, @NotNull T data) {
         this.path = path;
