@@ -1,43 +1,69 @@
 package it.futurecraft.futureapi.command;
 
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Represent a command.
+ * Represent a plugin command.
  *
  * @param <S> The type of the command sender.
+ * @param <T> The type of the command builder.
  * @since v0.3.0
  */
-public interface Command<S> extends BrigadierBuildable<S, LiteralArgumentBuilder<S>> {
+public interface Command<S extends Invoker, T extends ArgumentBuilder<S, T>> {
     /**
-     * Get the command name.
+     * The name of the command.
      *
      * @return The command name.
      */
-    String getName();
+    @NotNull String getName();
 
     /**
-     * Get the permission node required to run the command.
+     * The permission required to execute the command.
      *
      * @return The command permission.
      */
-    Optional<String> getPermission();
+    Optional<Permission<S>> getPermission();
 
     /**
-     * Get a list of sub commands.
+     * The description of the command.
      *
-     * @return The sub commands list.
+     * @return The command description.
      */
-    List<SubCommand<S, ?>> getSubCommands();
+    @NotNull Component getUsage();
 
     /**
-     * The action the command has to perform.
+     * Get a list of the sub commands of the command.
+     * <p>
+     * If the command has no sub commands, return an empty list.
      *
-     * @param sender The sender of the command.
-     * @return {@code true} if the command was executed successfully, {@code false} otherwise.
+     * @return The list of sub commands.
      */
-    boolean run(S sender);
+    List<Command<S, ?>> getSubCommands();
+
+    /**
+     * The action to perform when the command is executed.
+     *
+     * @param sender The invoker of the command.
+     * @return The result of the command execution.
+     */
+    int run(S sender);
+
+    /**
+     * Create an instance of the brigadier builder for the command.
+     * <p>
+     * It can be a {@code LiteralArgumentBuilder} or a {@code RequiredArgumentBuilder}.
+     *
+     * @return The builder instance.
+     * @see ArgumentBuilder
+     * @see LiteralArgumentBuilder
+     * @see RequiredArgumentBuilder
+     */
+    @NotNull T builder();
 }
