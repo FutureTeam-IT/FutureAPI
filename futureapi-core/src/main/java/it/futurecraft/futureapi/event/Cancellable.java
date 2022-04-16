@@ -2,8 +2,6 @@ package it.futurecraft.futureapi.event;
 
 /**
  * A cancellable event.
- *
- * @since v0.2.0
  */
 public interface Cancellable {
     /**

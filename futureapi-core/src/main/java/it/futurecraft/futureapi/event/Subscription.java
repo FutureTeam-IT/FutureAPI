@@ -6,7 +6,6 @@ import java.util.function.Consumer;
  * Represent a subscription to event dispatch.
  *
  * @param <E> The event.
- * @since v0.2.0
  */
 public interface Subscription<E extends FutureEvent> {
     /**

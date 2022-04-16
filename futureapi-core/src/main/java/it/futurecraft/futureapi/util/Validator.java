@@ -2,8 +2,6 @@ package it.futurecraft.futureapi.util;
 
 /**
  * Validator checker
- *
- * @since v0.1.2
  */
 public class Validator {
     /**

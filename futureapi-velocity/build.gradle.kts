@@ -1,5 +1,3 @@
-version = "0.1.0"
-
 repositories {
     maven("https://nexus.velocitypowered.com/repository/maven-public/")
 }

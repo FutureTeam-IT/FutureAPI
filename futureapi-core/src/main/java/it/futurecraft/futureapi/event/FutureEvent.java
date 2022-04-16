@@ -4,8 +4,6 @@ import it.futurecraft.futureapi.FuturePlugin;
 
 /**
  * Represent an event from the plugin.
- *
- * @since v0.2.0
  */
 public interface FutureEvent {
     /**

@@ -12,7 +12,6 @@ import java.nio.file.Path;
  * Represent a TOML file.
  *
  * @param <T> The model representing the file content.
- * @since v0.1.1
  */
 public final class TomlFile<T> extends PluginFile<T> {
     /**

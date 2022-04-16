@@ -4,8 +4,6 @@ package it.futurecraft.futureapi.files;
  * The plugin configuration file model.
  * <p>
  * Every plugin need to have its own implementation to properly run.
- *
- * @since v0.1.2
  */
 public interface ConfigModel {
     /**
@@ -13,14 +11,12 @@ public interface ConfigModel {
      *
      * @return The database connection information model.
      */
-    Database getDatabase();
+    DatabaseInfo getDatabase();
 
     /**
      * The database connection information model.
-     *
-     * @since v0.1.2
      */
-    class Database {
+    class DatabaseInfo {
         String hostname;
         Long port;
         String database;

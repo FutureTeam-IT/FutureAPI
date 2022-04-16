@@ -6,8 +6,6 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents the protocol version the server is running on.
  * <p>Can be used only in Bukkit.</p>
- *
- * @since v0.1.0
  */
 public enum ProtocolVersion {
     v1_18_2(758, "1.18.2"),

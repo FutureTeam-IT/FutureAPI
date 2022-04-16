@@ -2,9 +2,6 @@ package it.futurecraft.futureapi.event;
 
 import java.util.function.Consumer;
 
-/**
- * @since v0.2.1
- */
 final class SubscriptionImpl<E extends FutureEvent> implements Subscription<E> {
     private final Consumer<? super E> handler;
     private final Class<E> event;

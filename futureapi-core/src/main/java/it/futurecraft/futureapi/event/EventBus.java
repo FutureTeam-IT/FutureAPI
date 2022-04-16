@@ -7,8 +7,6 @@ import java.util.function.Consumer;
 
 /**
  * The event bus.
- *
- * @since v0.2.1
  */
 public interface EventBus {
     /**
