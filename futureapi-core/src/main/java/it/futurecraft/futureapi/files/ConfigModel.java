@@ -1,5 +1,8 @@
 package it.futurecraft.futureapi.files;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * The plugin configuration file model.
  * <p>
@@ -22,13 +25,14 @@ public interface ConfigModel {
         String database;
         String username;
         String password;
+        String tablePrefix;
 
         /**
          * Create the database connection URL in JDBC format.
          *
          * @return The database connection URL
          */
-        public String toURL() {
+        public @NotNull String toURL() {
             return "jdbc:mysql://" + hostname + ":" + port + "/" + database;
         }
 
@@ -37,7 +41,7 @@ public interface ConfigModel {
          *
          * @return The database server hostname.
          */
-        public String getHostname() {
+        public @NotNull String getHostname() {
             return hostname;
         }
 
@@ -46,7 +50,7 @@ public interface ConfigModel {
          *
          * @return The database server port.
          */
-        public Long getPort() {
+        public @NotNull Long getPort() {
             return port;
         }
 
@@ -55,7 +59,7 @@ public interface ConfigModel {
          *
          * @return The database to use.
          */
-        public String getDatabase() {
+        public @NotNull String getDatabase() {
             return database;
         }
 
@@ -64,7 +68,7 @@ public interface ConfigModel {
          *
          * @return The username used to connect to the database server.
          */
-        public String getUsername() {
+        public @NotNull String getUsername() {
             return username;
         }
 
@@ -73,8 +77,17 @@ public interface ConfigModel {
          *
          * @return The password used to connect to the database server.
          */
-        public String getPassword() {
+        public @NotNull String getPassword() {
             return password;
+        }
+
+        /**
+         * Get the table prefix to use.
+         *
+         * @return The table prefix to use.
+         */
+        public @Nullable String getTablePrefix() {
+            return tablePrefix;
         }
     }
 }
