@@ -37,7 +37,6 @@ public interface EventBus {
      * @param priority The handler priority.
      * @param <E>      The event type.
      * @return The subscription to the event.
-     * @since v0.2.3
      */
     <E extends FutureEvent> Subscription<E> subscribe(@NotNull Class<E> event, @NotNull Consumer<? super E> handler, @NotNull FutureEvent.Priority priority);
 
