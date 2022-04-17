@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * Represents a database.
+ * Plugin database connection.
  */
 public final class Database {
     private final HikariConfig config;
