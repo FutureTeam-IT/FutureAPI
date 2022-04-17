@@ -72,7 +72,7 @@ public final class Database {
      * @return The transaction.
      */
     public <T> T withTransaction(Function<Transaction, T> consumer) throws Exception {
-        try (Transaction transaction = transactionManager.get().orElse(transactionManager.newTransaction())) {
+        try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
             return consumer.apply(transaction);
         }
     }

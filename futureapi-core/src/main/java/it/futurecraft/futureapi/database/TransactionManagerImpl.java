@@ -14,7 +14,7 @@ final class TransactionManagerImpl implements TransactionManager {
     }
 
     @Override
-    public Optional<Transaction> get() {
+    public Optional<Transaction> current() {
         return Optional.ofNullable(transaction.get());
     }
 

@@ -1,6 +1,5 @@
 package it.futurecraft.futureapi.database;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
 /**
@@ -12,7 +11,7 @@ public interface TransactionManager {
      *
      * @return The current transaction.
      */
-    Optional<Transaction> get();
+    Optional<Transaction> current();
 
     /**
      * Create a new transaction.
