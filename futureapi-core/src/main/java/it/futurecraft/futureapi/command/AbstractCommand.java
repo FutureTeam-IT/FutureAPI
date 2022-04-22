@@ -40,18 +40,6 @@ public abstract class AbstractCommand<S, T extends ArgumentBuilder<S, T>> implem
     private final Component usage;
     private final List<Command<S, ?>> subcommands;
 
-    public AbstractCommand(@NotNull String name) {
-        this(name, null, null);
-    }
-
-    public AbstractCommand(@NotNull String name, @NotNull String permission) {
-        this(name, permission, null);
-    }
-
-    public AbstractCommand(@NotNull String name, @NotNull Component usage) {
-        this(name, null, usage);
-    }
-
     public AbstractCommand(@NotNull String name, @Nullable String permission, @Nullable Component usage) {
         this.name = name;
         this.permission = permission;
