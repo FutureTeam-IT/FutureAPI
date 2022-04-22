@@ -30,6 +30,7 @@ import java.util.Optional;
 
 /**
  * The abstract command.
+ *
  * @param <S> The type of the command sender.
  * @param <T> THe type of the command.
  */
@@ -45,6 +46,10 @@ public abstract class AbstractCommand<S, T extends ArgumentBuilder<S, T>> implem
 
     public AbstractCommand(@NotNull String name, @NotNull String permission) {
         this(name, permission, null);
+    }
+
+    public AbstractCommand(@NotNull String name, @NotNull Component usage) {
+        this(name, null, usage);
     }
 
     public AbstractCommand(@NotNull String name, @Nullable String permission, @Nullable Component usage) {
