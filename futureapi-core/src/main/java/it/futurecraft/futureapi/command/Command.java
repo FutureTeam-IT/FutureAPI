@@ -19,7 +19,8 @@
 package it.futurecraft.futureapi.command;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.suggestion.Suggestion;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -71,14 +72,6 @@ public interface Command<S, T extends ArgumentBuilder<S, T>> {
      * @throws IllegalArgumentException If the subcommand is already registered.
      */
     Command<S, ?> addSubcommand(@NotNull Command<S, ?> subcommand);
-
-    /**
-     * Create a list of suggestions for the command asynchronously.
-     *
-     * @param sender The command sender.
-     * @return The suggestion list.
-     */
-    CompletableFuture<List<Suggestion>> suggest(S sender);
 
     /**
      * Builds the command.
