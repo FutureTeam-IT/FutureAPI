@@ -20,7 +20,6 @@ package it.futurecraft.futureapi.util;
 
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
-
 /**
  * Represents the protocol version the server is running on.
  * <p>Can be used only in Bukkit.</p>
