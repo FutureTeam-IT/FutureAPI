@@ -23,10 +23,10 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 /**
  * A command which is buildable to Mojang's Brigadier.
  *
- * @param <S> The command sender.
+ * @param <I> The command invoker.
  * @param <T> The command type.
  */
-public interface BuildableCommand<S, T extends ArgumentBuilder<S, T>> {
+public interface BuildableCommand<I, T extends ArgumentBuilder<I, T>> {
     /**
      * Create the builder for the command.
      *
