@@ -27,9 +27,9 @@ public interface Executable<I> {
     /**
      * The method to run when the command is executed.
      *
-     * @param sender    The command sender.
+     * @param invoker   The command invoker.
      * @param arguments The argument array.
      * @return The status code.
      */
-    int execute(I sender, Object[] arguments);
+    int execute(I invoker, Object[] arguments);
 }
