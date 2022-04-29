@@ -21,12 +21,12 @@ package it.futurecraft.futureapi.command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 /**
- * A command which is buildable to Mojang's Brigadier.
+ * An object buildable to Mojang's Brigadier.
  *
  * @param <I> The command invoker.
  * @param <T> The command type.
  */
-public interface BuildableCommand<I, T extends ArgumentBuilder<I, T>> {
+public interface BrigadierBuildable<I, T extends ArgumentBuilder<I, T>> {
     /**
      * Create the builder for the command.
      *
