@@ -20,6 +20,7 @@ package it.futurecraft.futureapi.command;
 
 import net.kyori.adventure.text.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -44,9 +45,17 @@ public interface Command<I> {
 
     /**
      * Get the component for the usage command.
+     * <p>It is used to describe the command usage and sent whenever the user has executed with invalid arguments.</p>
      *
      * @return The usage component.
      * @see Component
      */
     Optional<Component> getUsage();
+
+    /**
+     * Get a list of the subcommands of the current command.
+     *
+     * @return The list of subcommands.
+     */
+    List<Command<I>> getSubCommands();
 }
