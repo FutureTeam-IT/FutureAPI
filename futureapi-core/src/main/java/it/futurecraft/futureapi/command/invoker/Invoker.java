@@ -39,28 +39,28 @@ public interface Invoker {
     FuturePlugin<?> getPlugin();
 
     /**
-     * Get the player UUID.
+     * Get the invoker UUID.
      *
-     * @return The player UUID.
+     * @return The invoker UUID.
      */
     UUID getUniqueId();
 
     /**
-     * Get the player name.
+     * Get the invoker name.
      *
-     * @return The player name.
+     * @return The invoker name.
      */
     String getName();
 
     /**
-     * Send a message to the player.
+     * Send a message to the invoker.
      *
      * @param message The message to send.
      */
     void send(String message);
 
     /**
-     * Send a component to the player.
+     * Send a component to the invoker.
      *
      * @param component The component to send.
      * @see Component

@@ -22,7 +22,10 @@ import it.futurecraft.futureapi.command.invoker.Invoker;
 
 import java.util.function.Predicate;
 
-public class Permission implements Predicate<Invoker> {
+/**
+ * Command permission.
+ */
+public final class Permission implements Predicate<Invoker> {
     private final String node;
     private boolean negate;
 
@@ -35,19 +38,40 @@ public class Permission implements Predicate<Invoker> {
         this.negate = negate;
     }
 
+    /**
+     * Get the permission node.
+     *
+     * @return The permission node.
+     */
     public String getNode() {
         return node;
     }
 
+    /**
+     * Get whether the permission is negated.
+     *
+     * @return {@code true} if the permission is negated, {@code false} otherwise.
+     */
     public boolean isNegate() {
         return negate;
     }
 
+    /**
+     * Negate the permission.
+     *
+     * @return The negated permission.
+     */
     public Permission negate() {
         negate = true;
         return this;
     }
 
+    /**
+     * Check if the invoker has this permission.
+     *
+     * @param invoker The invoker.
+     * @return {@code true} if the invoker has the permission, {@code false} otherwise.
+     */
     @Override
     public boolean test(Invoker invoker) {
         return invoker.hasPermission(this);
