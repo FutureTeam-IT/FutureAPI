@@ -18,6 +18,8 @@
 
 package it.futurecraft.futureapi.command;
 
+import it.futurecraft.futureapi.command.types.ArgumentCommand;
+import it.futurecraft.futureapi.command.types.LiteralCommand;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
@@ -41,7 +43,9 @@ public interface Command<I> {
      *
      * @return The permission node.
      */
-    Optional<String> getPermission();
+    default Optional<Permission> getPermission() {
+        return Optional.empty();
+    }
 
     /**
      * Get the component for the usage command.
@@ -50,7 +54,9 @@ public interface Command<I> {
      * @return The usage component.
      * @see Component
      */
-    Optional<Component> getUsage();
+    default Optional<Component> getUsage() {
+        return Optional.empty();
+    }
 
     /**
      * Get a list of the subcommands of the current command.
@@ -58,4 +64,30 @@ public interface Command<I> {
      * @return The list of subcommands.
      */
     List<Command<I>> getSubCommands();
+
+    /**
+     * Add a subcommand to the current command.
+     *
+     * @param command The subcommand to add.
+     * @return {@code true} if the subcommand was added, {@code false} otherwise.
+     */
+    boolean addSubCommand(Command<I> command);
+
+    /**
+     * Check if the command is a literal command.
+     *
+     * @return {@code true} if the command is a literal command, {@code false} otherwise.
+     */
+    default boolean isLiteral() {
+        return this instanceof LiteralCommand;
+    }
+
+    /**
+     * Check if the command is an argument command.
+     *
+     * @return {@code true} if the command is an argument command, {@code false} otherwise.
+     */
+    default boolean isArgument() {
+        return this instanceof ArgumentCommand;
+    }
 }

@@ -26,6 +26,8 @@ import java.util.Optional;
 
 /**
  * A plugin which uses FutureAPI.
+ *
+ * @param <C> The type of the configuration file model.
  */
 public interface FuturePlugin<C extends ConfigModel> {
     /**
