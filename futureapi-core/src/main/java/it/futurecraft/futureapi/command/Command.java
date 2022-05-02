@@ -30,7 +30,7 @@ import java.util.Optional;
  *
  * @param <I> The command invoker type.
  */
-public interface Command<I> {
+public interface Command {
     /**
      * Get the command name.
      *
@@ -63,7 +63,7 @@ public interface Command<I> {
      *
      * @return The list of subcommands.
      */
-    List<Command<I>> getSubCommands();
+    List<Command> getSubCommands();
 
     /**
      * Add a subcommand to the current command.
@@ -71,7 +71,7 @@ public interface Command<I> {
      * @param command The subcommand to add.
      * @return {@code true} if the subcommand was added, {@code false} otherwise.
      */
-    boolean addSubCommand(Command<I> command);
+    boolean addSubCommand(Command command);
 
     /**
      * Check if the command is a literal command.

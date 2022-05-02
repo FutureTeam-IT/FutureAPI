@@ -81,7 +81,9 @@ public interface Invoker {
      * @param permission The permission to check.
      * @return {@code true} if the invoker has the permission, {@code false} otherwise.
      */
-    boolean hasPermission(Permission permission);
+    default boolean hasPermission(Permission permission) {
+        return hasPermission(permission.getNode());
+    }
 
     /**
      * Check whether the invoker is a console operator.

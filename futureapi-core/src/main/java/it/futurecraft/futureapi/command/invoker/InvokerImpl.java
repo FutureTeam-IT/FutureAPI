@@ -75,10 +75,6 @@ final class InvokerImpl<T> implements Invoker {
         return wrapper.hasPermission(invoker, permission);
     }
 
-    public boolean hasPermission(Permission permission) {
-        return hasPermission(permission.getNode());
-    }
-
     @Override
     public boolean isConsole() {
         return isConsole;

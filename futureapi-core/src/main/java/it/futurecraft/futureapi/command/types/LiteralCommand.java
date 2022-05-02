@@ -20,7 +20,7 @@ package it.futurecraft.futureapi.command.types;
 
 import it.futurecraft.futureapi.command.AbstractCommand;
 
-public abstract class LiteralCommand<I> extends AbstractCommand<I> {
+public abstract class LiteralCommand extends AbstractCommand {
     public LiteralCommand(String name) {
         super(name);
     }

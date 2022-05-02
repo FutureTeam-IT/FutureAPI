@@ -18,6 +18,7 @@
 
 package it.futurecraft.futureapi;
 
+import it.futurecraft.futureapi.command.CommandManager;
 import it.futurecraft.futureapi.event.EventBus;
 import it.futurecraft.futureapi.files.ConfigModel;
 import it.futurecraft.futureapi.files.PluginFile;
@@ -59,4 +60,6 @@ public interface FuturePlugin<C extends ConfigModel> {
     default Optional<EventBus> eventBus() {
         return Optional.empty();
     }
+
+    CommandManager<?> getCommandManager();
 }

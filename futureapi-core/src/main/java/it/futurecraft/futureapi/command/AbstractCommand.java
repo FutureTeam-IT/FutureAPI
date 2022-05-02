@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AbstractCommand<I> implements Command<I> {
+public abstract class AbstractCommand implements Command {
     private final String name;
-    private final Set<Command<I>> childrens;
+    private final Set<Command> childrens;
 
     public AbstractCommand(String name) {
         this.name = name;
@@ -37,12 +37,12 @@ public abstract class AbstractCommand<I> implements Command<I> {
     }
 
     @Override
-    public List<Command<I>> getSubCommands() {
+    public List<Command> getSubCommands() {
         return childrens.stream().toList();
     }
 
     @Override
-    public boolean addSubCommand(Command<I> command) {
+    public boolean addSubCommand(Command command) {
         return childrens.add(command);
     }
 }

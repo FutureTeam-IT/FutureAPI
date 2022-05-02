@@ -27,13 +27,13 @@ import java.util.List;
  *
  * @param <I> The command interface.
  */
-public interface CommandManager<I> {
+public interface CommandManager {
     /**
      * Get the list of registered commands.
      *
      * @return The list of registered commands.
      */
-    List<Command<I>> getCommands();
+    List<Command> getCommands();
 
     /**
      * Get the command with the given name.
@@ -42,19 +42,20 @@ public interface CommandManager<I> {
      * @param name The name of the command.
      * @return The command with the given name.
      */
-    Command<I> getCommand(String name);
+    Command getCommand(String name);
 
     /**
      * Register a new command.
+     * <p>Only literal commands can be registered as root nodes.</p>
      *
      * @param command The command to register.
      */
-    void register(Command<I> command);
+    void register(LiteralCommand command);
 
     /**
      * Unregister a command.
      *
      * @param command The command to unregister.
      */
-    void unregister(Command<I> command);
+    void unregister(LiteralCommand command);
 }
