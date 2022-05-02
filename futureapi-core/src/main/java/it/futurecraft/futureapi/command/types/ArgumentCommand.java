@@ -17,13 +17,23 @@
  */
 
 package it.futurecraft.futureapi.command.types;
+
+import com.mojang.brigadier.arguments.ArgumentType;
 import it.futurecraft.futureapi.command.AbstractCommand;
+import it.futurecraft.futureapi.command.invoker.Invoker;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class ArgumentCommand<I, T> extends AbstractCommand<I> {
-    public ArgumentCommand(String name) {
+public abstract class ArgumentCommand<T> extends AbstractCommand {
+    private final ArgumentType<T> type;
+
+    public ArgumentCommand(String name, ArgumentType<T> type) {
         super(name);
+        this.type = type;
+    }
+
+    public ArgumentType<T> getType() {
+        return type;
     }
 
     /**
@@ -33,5 +43,5 @@ public abstract class ArgumentCommand<I, T> extends AbstractCommand<I> {
      * @param argument The argument represented by this command.
      * @return The suggestions list.
      */
-    public abstract CompletableFuture<T> suggest(I invoker, String argument);
+    public abstract CompletableFuture<T> suggest(Invoker invoker, String argument);
 }
