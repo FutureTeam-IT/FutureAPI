@@ -18,6 +18,7 @@
 package it.futurecraft.futureapi.gui.inventory;
 
 import it.futurecraft.futureapi.gui.GUIHolder;
+import it.futurecraft.futureapi.gui.inventory.component.AlertButton;
 import it.futurecraft.futureapi.gui.inventory.component.Button;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,6 +38,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class InventoryFactory implements GUIHolder, Listener, InventoryHolder {
     // Check if the listener has been already registered one time
     private static final boolean registeredListener = false;
+    private final Plugin plugin;
+    public Plugin getPlugin() {return plugin;}
 
     private Inventory inventory;
     private final Button[] buttons;
@@ -48,6 +51,7 @@ public abstract class InventoryFactory implements GUIHolder, Listener, Inventory
     protected boolean preventPickup = true;
 
     public InventoryFactory(Plugin plugin, String title, int size) {
+        this.plugin = plugin;
         this.title = title;
         this.size = size;
         this.buttons = new Button[size];
@@ -56,6 +60,7 @@ public abstract class InventoryFactory implements GUIHolder, Listener, Inventory
     }
 
     public InventoryFactory(Plugin plugin, String title, InventoryType type) {
+        this.plugin = plugin;
         this.title = title;
         this.type = type;
         this.buttons = new Button[type.getDefaultSize()];
@@ -68,8 +73,14 @@ public abstract class InventoryFactory implements GUIHolder, Listener, Inventory
 
     protected void handleClick(InventoryClickEvent e) {
         if (preventPickup) e.setCancelled(true);
-        if (buttons[e.getSlot()-1]!=null)
-            this.onInventoryInteract(((Player) e.getWhoClicked()), e.getClick(), e.getSlot(), e.getCurrentItem());
+        if (buttons[e.getSlot() - 1] != null) {
+            Player player = (Player) e.getWhoClicked();
+            ClickType clickType = e.getClick();
+            int slot = e.getSlot();
+
+            buttons[e.getSlot()].getClickAction().action(player, clickType);
+            this.onInventoryInteract(player, clickType, slot, e.getCurrentItem());
+        }
     }
 
 
@@ -86,6 +97,9 @@ public abstract class InventoryFactory implements GUIHolder, Listener, Inventory
             if (slot>=size) return;
             buttons[slot]=button;
             inventory.setItem(slot, button.getItemStack());
+
+            if (button instanceof AlertButton)
+                ((AlertButton) button).start(slot, this);
         }
     }
 
@@ -97,6 +111,9 @@ public abstract class InventoryFactory implements GUIHolder, Listener, Inventory
         int slot = inventory.firstEmpty();
         buttons[slot] = button;
         inventory.addItem(button.getItemStack());
+
+        if (button instanceof AlertButton)
+            ((AlertButton) button).start(slot, this);
     }
 
     /**

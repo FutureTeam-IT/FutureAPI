@@ -18,33 +18,52 @@
 package it.futurecraft.futureapi.gui.inventory.component;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-public final class Button {
-    private ItemStack itemStack;
-    private int slot;
-    private ClickAction action;
+public class Button {
+    private ItemStack itemStack = null;
+    private ClickAction clickAction = null;
 
     public static Button createButton() {
+        AlertButton b = new AlertButton();
+
         return new Button();
     }
 
+    /**
+     * Associate an ItemStack to this button object
+     * @param itemStack The ItemStack instance
+     * @return This button object
+     */
     public Button setItemStack(ItemStack itemStack) {
         this.itemStack = itemStack;
         return this;
     }
+
+    /**
+     * Get the ItemStack associated with this button object
+     * @return The ItemStack instance
+     */
     public ItemStack getItemStack() {
         return itemStack;
     }
 
-    public Button setSlot(int slot) {
-        this.slot = slot;
+
+    /*
+        CLICK ACTION MANAGEMENT
+     */
+
+    public ClickAction getClickAction() {
+        return clickAction;
+    }
+
+    public Button setClickAction(ClickAction clickAction) {
+        this.clickAction = clickAction;
         return this;
     }
 
-
     public interface ClickAction {
-        void action(Player player, Action interactType);
+        void action(Player player, ClickType interactType);
     }
 }
