@@ -70,7 +70,7 @@ public enum ProtocolVersion {
     v1_8_2(47, "1.8.2"),
     v1_8_1(47, "1.8.1"),
     v1_8(47, "1.8"),
-    UNKOWN(-1, "UNKOWN");
+    UNKNOWN(-1, "UNKNOWN");
 
     /**
      * The id of the version.
@@ -109,7 +109,7 @@ public enum ProtocolVersion {
         try {
             return valueOf(version);
         } catch (IllegalArgumentException e) {
-            return UNKOWN;
+            return UNKNOWN;
         }
     }
 
