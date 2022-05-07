@@ -21,39 +21,92 @@ import it.futurecraft.futureapi.gui.GUIHolder;
 import it.futurecraft.futureapi.gui.inventory.component.Button;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class InventoryFactory implements GUIHolder, InventoryHolder {
+
+public abstract class InventoryFactory implements GUIHolder, Listener, InventoryHolder {
+    // Check if the listener has been already registered one time
+    private static final boolean registeredListener = false;
 
     private Inventory inventory;
+    private final Button[] buttons;
 
-    private String title;
+    private final String title;
     private Integer size = null;
     private InventoryType type = null;
 
-    public InventoryFactory(String title, int size) {
+    protected boolean preventPickup = true;
+
+    public InventoryFactory(Plugin plugin, String title, int size) {
         this.title = title;
         this.size = size;
+        this.buttons = new Button[size];
+        if (!registeredListener)
+            Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    public InventoryFactory(String title, InventoryType type) {
+    public InventoryFactory(Plugin plugin, String title, InventoryType type) {
         this.title = title;
         this.type = type;
+        this.buttons = new Button[type.getDefaultSize()];
+        if (!registeredListener)
+            Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     public abstract void registerItems(Player player);
-    public abstract void onInventoryInteract(Player player, Action interactType, int slot, ItemStack item);
+    public abstract void onInventoryInteract(Player player, ClickType clickType, int slot, ItemStack item);
 
-    public void setItem(int slot, Button button) {
-
+    protected void handleClick(InventoryClickEvent e) {
+        if (preventPickup) e.setCancelled(true);
+        if (buttons[e.getSlot()-1]!=null)
+            this.onInventoryInteract(((Player) e.getWhoClicked()), e.getClick(), e.getSlot(), e.getCurrentItem());
     }
 
-    public void addItem(Button button) {
 
+    /**
+     * Set a new button into the inventory
+     * @param slot The slot
+     * @param button The button instance, null for remove the item
+     */
+    public void setItem(int slot, @Nullable Button button) {
+        if (button==null) {
+            buttons[slot]=null;
+            inventory.setItem(slot, null);
+        }else {
+            if (slot>=size) return;
+            buttons[slot]=button;
+            inventory.setItem(slot, button.getItemStack());
+        }
+    }
+
+    /**
+     * Add a new button into the first inventory empty slot
+     * @param button The button instance
+     */
+    public void addItem(@NotNull Button button) {
+        int slot = inventory.firstEmpty();
+        buttons[slot] = button;
+        inventory.addItem(button.getItemStack());
+    }
+
+    /**
+     * Get the Button instance from the inventory slot
+     * @param slot The inventory slot
+     * @return The Button instance or null if the current inventory slot doesn't contains any ItemStack
+     */
+    public Button getButton(int slot) {
+        if (slot>=size) return null;
+        return buttons[slot];
     }
 
     /**
@@ -70,5 +123,15 @@ public abstract class InventoryFactory implements GUIHolder, InventoryHolder {
             registerItems(player);
         }
         player.openInventory(inventory);
+    }
+
+
+    /*
+        LISTENER MANAGER
+     */
+    @EventHandler
+    private void onClick(InventoryClickEvent e) {
+        if (e.getInventory().getHolder() instanceof InventoryFactory)
+            ((InventoryFactory) e.getInventory().getHolder()).handleClick(e);
     }
 }

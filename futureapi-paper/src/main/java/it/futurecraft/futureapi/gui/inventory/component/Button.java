@@ -34,6 +34,9 @@ public final class Button {
         this.itemStack = itemStack;
         return this;
     }
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
 
     public Button setSlot(int slot) {
         this.slot = slot;
