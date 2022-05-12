@@ -33,6 +33,24 @@ public abstract class ColumnType<T> extends TypeReference<T> {
     }
 
     /**
+     * Get the name of the column type.
+     *
+     * @return The name of the type.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get the code of the column type.
+     *
+     * @return The code of the type.
+     */
+    public int getCode() {
+        return code;
+    }
+
+    /**
      * Parse a result set to get the value of the column.
      *
      * @param resultSet The result set to parse.

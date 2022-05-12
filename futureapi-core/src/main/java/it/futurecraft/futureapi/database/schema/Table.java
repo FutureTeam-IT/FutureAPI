@@ -180,7 +180,7 @@ public abstract class Table {
     /**
      * Register a new char column in the table.
      *
-     * @param name The name of the column.
+     * @param name   The name of the column.
      * @param length The length of the string.
      * @return The new column.
      */

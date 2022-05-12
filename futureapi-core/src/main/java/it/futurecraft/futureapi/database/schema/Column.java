@@ -31,11 +31,13 @@ public abstract class Column<T> {
     private final ColumnType<T> type;
 
     private boolean unique;
+    private boolean nullable;
 
     public Column(String name, ColumnType<T> type) {
         this.name = name;
         this.type = type;
         this.unique = false;
+        this.nullable = true;
     }
 
     /**
@@ -67,6 +69,15 @@ public abstract class Column<T> {
     }
 
     /**
+     * Get whether the column is nullable.
+     *
+     * @return {@code true} if the column is nullable.
+     */
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    /**
      * Parse a result set to get the value of the column.
      *
      * @param resultSet The result set to parse.
@@ -94,6 +105,35 @@ public abstract class Column<T> {
      */
     public Column<T> unique(boolean unique) {
         this.unique = unique;
+        return this;
+    }
+
+    /**
+     * Set the column as nullable.
+     *
+     * @return The column.
+     */
+    public Column<T> nullable() {
+        return nullable(true);
+    }
+
+    /**
+     * Add to the column the not null constraint.
+     *
+     * @return The column.
+     */
+    public Column<T> notNull() {
+        return nullable(false);
+    }
+
+    /**
+     * Set whether the column is nullable.
+     *
+     * @param nullable {@code true} if the column is nullable.
+     * @return The column.
+     */
+    public Column<T> nullable(boolean nullable) {
+        this.nullable = nullable;
         return this;
     }
 
