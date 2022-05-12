@@ -156,6 +156,48 @@ public abstract class Table {
         return register(new ColumnExtension<>(name, new DateTime()));
     }
 
+    /**
+     * Register a new varchar column in the table.
+     *
+     * @param name   The name of the column.
+     * @param length The maximum length of the string.
+     * @return The new column.
+     */
+    public Column<String> varchar(String name, int length) {
+        return register(new ColumnExtension<>(name, new VarChar(length)));
+    }
+
+    /**
+     * Register a new varchar column in the table.
+     *
+     * @param name The name of the column.
+     * @return The new column.
+     */
+    public Column<String> varchar(String name) {
+        return register(new ColumnExtension<>(name, new VarChar()));
+    }
+
+    /**
+     * Register a new char column in the table.
+     *
+     * @param name The name of the column.
+     * @param length The length of the string.
+     * @return The new column.
+     */
+    public Column<String> characters(String name, int length) {
+        return register(new ColumnExtension<>(name, new FixedChar(length)));
+    }
+
+    /**
+     * Register a new char column in the table.
+     *
+     * @param name The name of the column.
+     * @return The new column.
+     */
+    public Column<String> character(String name) {
+        return register(new ColumnExtension<>(name, new FixedChar()));
+    }
+
     class ColumnExtension<T> extends Column<T> {
         public ColumnExtension(String name, ColumnType<T> type) {
             super(name, type);
