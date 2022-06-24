@@ -21,8 +21,12 @@ package it.futurecraft.futureapi.database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import it.futurecraft.futureapi.files.ConfigModel;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -30,14 +34,12 @@ import java.util.function.Function;
  * Plugin database connection.
  */
 public final class Database {
-    private final HikariConfig config;
     private final HikariDataSource dataSource;
     private final TransactionManager transactionManager;
-    private final String tablePrefix;
+    private final String prefix;
 
-    private Database(HikariConfig config, String tablePrefix) {
-        this.config = config;
-        this.tablePrefix = tablePrefix;
+    private Database(HikariConfig config, String prefix) {
+        this.prefix = prefix;
         this.dataSource = new HikariDataSource(config);
         this.transactionManager = new TransactionManagerImpl(dataSource::getConnection);
     }
@@ -79,7 +81,7 @@ public final class Database {
         config.addDataSourceProperty("elideSetAutoCommits", true);
         config.addDataSourceProperty("maintainTimeStats", false);
 
-        return new Database(config, databaseInfo.getTablePrefix());
+        return new Database(config, databaseInfo.getPrefix());
     }
 
     /**
@@ -87,7 +89,7 @@ public final class Database {
      * <p>If the current thread already has a opened transaction, will be used.</p>
      *
      * @param consumer The consumer to be executed.
-     * @return The transaction.
+     * @return The transaction value.
      */
     public <T> T withTransaction(Function<Transaction, T> consumer) throws Exception {
         try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
@@ -110,7 +112,7 @@ public final class Database {
      *
      * @return The table prefix.
      */
-    public Optional<String> getTablePrefix() {
-        return Optional.ofNullable(tablePrefix);
+    public Optional<String> getPrefix() {
+        return Optional.ofNullable(prefix);
     }
 }

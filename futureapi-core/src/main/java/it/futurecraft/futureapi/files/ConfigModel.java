@@ -43,7 +43,7 @@ public interface ConfigModel {
         String database;
         String username;
         String password;
-        String tablePrefix;
+        String prefix;
 
         /**
          * Create the database connection URL in JDBC format.
@@ -104,8 +104,8 @@ public interface ConfigModel {
          *
          * @return The table prefix to use.
          */
-        public @Nullable String getTablePrefix() {
-            return tablePrefix;
+        public @Nullable String getPrefix() {
+            return prefix;
         }
     }
 }
