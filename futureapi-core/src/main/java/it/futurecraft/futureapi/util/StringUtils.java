@@ -21,7 +21,7 @@ package it.futurecraft.futureapi.util;
 /**
  * String utility class.
  */
-public class StringUtils {
+public final class StringUtils {
     private StringUtils() {
     }
 
