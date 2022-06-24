@@ -22,10 +22,12 @@ import it.futurecraft.futureapi.database.Database;
 import it.futurecraft.futureapi.database.schema.Column;
 import it.futurecraft.futureapi.database.schema.Table;
 
-import java.lang.reflect.Constructor;
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Iterator;
+
 
 /**
  * Utility class for schema management.
@@ -35,19 +37,66 @@ import java.sql.Statement;
 public final class SchemaUtils {
     // TODO: Implements versioning logic.
 
-    private static Database db;
-
     private SchemaUtils() {
         throw new IllegalAccessError("Utility class should not be instantiated.");
     }
 
-    private static Table instantiate(Class<? extends Table> table) throws Throwable {
-        Constructor<? extends Table> constructor = table.getConstructor();
-        return constructor.newInstance();
+    private static <T extends Table> T initTable(Class<T> clazz) throws Exception {
+        return clazz.getConstructor().newInstance();
     }
 
-    @SafeVarargs
-    public static void create(Class<? extends Table>... tables) throws Throwable {
+    public static <T extends Table> void create(Database db, Class<T> clazz) throws Throwable {
+        StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + db.getPrefix().orElse(""));
+        T instance = initTable(clazz);
+
+        // Set the table name
+        query.append(instance.getName());
+
+        // Initialize every column
+        for (Column<?> column : instance.getColumns()) {
+            query.append(column.getName()); // Set column name
+
+            // Checks whether the column should never be null
+            if (!column.isNullable()) {
+                query.append(" NOT NULL");
+            }
+
+            // Checks whether the column value's unique
+            if (column.isUnique()) {
+                query.append(" UNIQUE");
+            }
+
+            query.append(", ");
+        }
+
+        query.append("PRIMARY KEY(");
+
+        int columnIndex = 0;
+        for (String column : instance.getPrimaryKeys()) {
+            query.append(column);
+
+            if (columnIndex < instance.getPrimaryKeys().size() - 1) {
+                query.append(", ");
+            }
+        }
+
+        query.append("));");
+
+
+        db.withTransaction(t -> {
+            try (Statement stmt = t.getConnection().createStatement()) {
+                stmt.execute(query.toString());
+            } catch (SQLException ignored) {
+            }
+
+            return null;
+        });
+    }
+
+    public static void create(Database db, Class<? extends Table>... classes) throws Throwable {
+        for (Class<? extends Table> clazz : classes) {
+            create(db, clazz);
+        }
     }
 
     public static void update(Class<? extends Table> table) {
