@@ -18,6 +18,7 @@
 
 package it.futurecraft.futureapi.database;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 /**
@@ -37,5 +38,5 @@ public interface TransactionManager {
      *
      * @return The new transaction.
      */
-    Transaction newTransaction() throws Exception;
+    Transaction newTransaction() throws SQLException;
 }

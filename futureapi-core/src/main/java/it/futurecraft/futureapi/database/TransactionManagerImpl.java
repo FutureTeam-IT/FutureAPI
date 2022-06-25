@@ -37,13 +37,13 @@ final class TransactionManagerImpl implements TransactionManager {
     }
 
     @Override
-    public Transaction newTransaction() throws Exception {
+    public Transaction newTransaction() throws SQLException {
         if (transaction.get() != null) {
-            throw new IllegalStateException("Current thread has already started a transaction.");
+            return transaction.get();
         }
 
-        Transaction transaction = new TransactionImpl(supplier.get());
-        this.transaction.set(transaction);
+            Transaction transaction = new TransactionImpl(supplier.get());
+            this.transaction.set(transaction);
 
         return transaction;
     }
