@@ -22,12 +22,8 @@ import it.futurecraft.futureapi.database.Database;
 import it.futurecraft.futureapi.database.schema.Column;
 import it.futurecraft.futureapi.database.schema.Table;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Iterator;
-
 
 /**
  * Utility class for schema management.
@@ -50,11 +46,13 @@ public final class SchemaUtils {
         T instance = initTable(clazz);
 
         // Set the table name
-        query.append(instance.getName());
+        query.append(instance.getName())
+                .append("(");
 
         // Initialize every column
         for (Column<?> column : instance.getColumns()) {
             query.append(column.getName()); // Set column name
+            query.append(" ").append(column.getType()); // Add the column type
 
             // Checks whether the column should never be null
             if (!column.isNullable()) {
@@ -66,30 +64,31 @@ public final class SchemaUtils {
                 query.append(" UNIQUE");
             }
 
-            query.append(", ");
+            query.append(",");
         }
 
-        query.append("PRIMARY KEY(");
+        if (instance.getPrimaryKeys().size() > 0) {
+            query.append("PRIMARY KEY(");
 
-        int columnIndex = 0;
-        for (String column : instance.getPrimaryKeys()) {
-            query.append(column);
+            int columnIndex = 0;
+            for (String column : instance.getPrimaryKeys()) {
+                query.append(column);
 
-            if (columnIndex < instance.getPrimaryKeys().size() - 1) {
-                query.append(", ");
+                if (columnIndex < instance.getPrimaryKeys().size() - 1) {
+                    query.append(", ");
+                }
             }
+            query.append(")");
         }
 
-        query.append("));");
-
+        query.append(");");
 
         db.withTransaction(t -> {
             try (Statement stmt = t.getConnection().createStatement()) {
                 stmt.execute(query.toString());
-            } catch (SQLException ignored) {
+            } catch (SQLException exception) {
+                exception.printStackTrace();
             }
-
-            return null;
         });
     }
 
