@@ -107,5 +107,14 @@ public interface ConfigModel {
         public @Nullable String getPrefix() {
             return prefix;
         }
+
+        public DatabaseInfo(String hostname, Long port, String database, String username, String password, String prefix) {
+            this.hostname = hostname;
+            this.port = port;
+            this.database = database;
+            this.username = username;
+            this.password = password;
+            this.prefix = prefix;
+        }
     }
 }
