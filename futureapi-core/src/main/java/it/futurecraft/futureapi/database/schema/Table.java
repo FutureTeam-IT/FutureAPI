@@ -184,7 +184,7 @@ public abstract class Table {
      * @param length The length of the string.
      * @return The new column.
      */
-    public Column<String> characters(String name, int length) {
+    public Column<String> character(String name, int length) {
         return register(new ColumnExtension<>(name, new FixedChar(length)));
     }
 
