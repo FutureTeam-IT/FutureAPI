@@ -21,13 +21,11 @@ package it.futurecraft.futureapi.database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import it.futurecraft.futureapi.files.ConfigModel;
-import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -36,6 +34,9 @@ import java.util.function.Function;
 public final class Database {
     private final HikariDataSource dataSource;
     private final TransactionManager transactionManager;
+
+    @Nullable
+
     private final String prefix;
 
     private Database(HikariConfig config, String prefix) {
@@ -94,6 +95,12 @@ public final class Database {
     public <T> T withTransaction(Function<Transaction, T> consumer) throws Exception {
         try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
             return consumer.apply(transaction);
+        }
+    }
+
+    public void withTransaction(Consumer<Transaction> consumer) throws Exception {
+        try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
+            consumer.accept(transaction);
         }
     }
 
