@@ -72,4 +72,9 @@ public abstract class ColumnType<T> extends TypeReference<T> {
         int index = resultSet.findColumn(label);
         return parse(resultSet, index);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

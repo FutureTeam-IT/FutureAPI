@@ -49,4 +49,9 @@ public class FixedChar extends ColumnType<String> {
     public String parse(ResultSet resultSet, int index) throws SQLException {
         return resultSet.getString(index);
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s(%d)", getName(), length);
+    }
 }
