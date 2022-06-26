@@ -20,7 +20,9 @@ package it.futurecraft.futureapi.util;
 
 import it.futurecraft.futureapi.database.Database;
 import it.futurecraft.futureapi.database.schema.Column;
+import it.futurecraft.futureapi.database.schema.Reference;
 import it.futurecraft.futureapi.database.schema.Table;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -37,21 +39,20 @@ public final class SchemaUtils {
         throw new IllegalAccessError("Utility class should not be instantiated.");
     }
 
-    private static <T extends Table> T initTable(Class<T> clazz) throws Exception {
+    public static <T extends Table> T initTable(Class<T> clazz) throws Exception {
         return clazz.getConstructor().newInstance();
     }
 
-    public static <T extends Table> void create(Database db, Class<T> clazz) throws Throwable {
+    public static <T extends Table> void create(@NotNull Database db, Class<T> clazz) throws Throwable {
         StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + db.getPrefix().orElse(""));
         T instance = initTable(clazz);
 
         // Set the table name
-        query.append(instance.getName())
-                .append("(");
+        query.append(instance.getName()).append("(");
 
         // Initialize every column
         for (Column<?> column : instance.getColumns()) {
-            query.append(column.getName()); // Set column name
+            query.append("" + column.getName()); // Set column name
             query.append(" ").append(column.getType()); // Add the column type
 
             // Checks whether the column should never be null
@@ -64,7 +65,14 @@ public final class SchemaUtils {
                 query.append(" UNIQUE");
             }
 
-            query.append(",");
+            query.append(", ");
+
+            column.getReference().ifPresent(reference -> query.append("FOREIGN KEY(")
+                    .append(column.getName())
+                    .append(") ")
+                    .append(reference)
+                    .append(", ")
+            );
         }
 
         if (instance.getPrimaryKeys().size() > 0) {
@@ -83,6 +91,8 @@ public final class SchemaUtils {
 
         query.append(");");
 
+        System.out.println(query);
+
         db.withTransaction(t -> {
             try (Statement stmt = t.getConnection().createStatement()) {
                 stmt.execute(query.toString());
@@ -92,10 +102,9 @@ public final class SchemaUtils {
         });
     }
 
-    public static void create(Database db, Class<? extends Table>... classes) throws Throwable {
-        for (Class<? extends Table> clazz : classes) {
-            create(db, clazz);
-        }
+    @SafeVarargs
+    public static void create(@NotNull Database db, Class<? extends Table>... classes) throws Throwable {
+        for (Class<? extends Table> clazz : classes) create(db, clazz);
     }
 
     public static void update(Class<? extends Table> table) {

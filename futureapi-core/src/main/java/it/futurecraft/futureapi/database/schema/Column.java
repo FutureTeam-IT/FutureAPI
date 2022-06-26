@@ -18,8 +18,13 @@
 
 package it.futurecraft.futureapi.database.schema;
 
+import it.futurecraft.futureapi.util.SchemaUtils;
+import org.jetbrains.annotations.Nullable;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * A column from a table.
@@ -33,11 +38,14 @@ public abstract class Column<T> {
     private boolean unique;
     private boolean nullable;
 
+    private Optional<Reference<?, T>> reference;
+
     public Column(String name, ColumnType<T> type) {
         this.name = name;
         this.type = type;
         this.unique = false;
         this.nullable = true;
+        this.reference = Optional.empty();
     }
 
     /**
@@ -153,4 +161,28 @@ public abstract class Column<T> {
      * @return The column.
      */
     public abstract Column<T> primaryKey(boolean primaryKey);
+
+    /**
+     * Check whether the column is a reference to another table.
+     *
+     * @return {@code true} if the column is a reference to another table.
+     */
+    public boolean isReference() {
+        return this.reference.isPresent();
+    }
+
+    public <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector) {
+        try {
+            S instance = SchemaUtils.initTable(table);
+            this.reference = Optional.of(new Reference<>(instance , selector.apply(instance)));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return this;
+    }
+
+    public Optional<Reference<?, T>> getReference() {
+        return reference;
+    }
 }
