@@ -91,8 +91,6 @@ public final class SchemaUtils {
 
         query.append(");");
 
-        System.out.println(query);
-
         db.withTransaction(t -> {
             try (Statement stmt = t.getConnection().createStatement()) {
                 stmt.execute(query.toString());

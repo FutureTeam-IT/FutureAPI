@@ -163,18 +163,17 @@ public abstract class Column<T> {
     public abstract Column<T> primaryKey(boolean primaryKey);
 
     /**
-     * Check whether the column is a reference to another table.
+     * Create a reference to another table.
      *
-     * @return {@code true} if the column is a reference to another table.
+     * @param table    The table to reference.
+     * @param selector The selector for the column to reference.
+     * @param <S>      The table type.
+     * @return The column.
      */
-    public boolean isReference() {
-        return this.reference.isPresent();
-    }
-
     public <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector) {
         try {
             S instance = SchemaUtils.initTable(table);
-            this.reference = Optional.of(new Reference<>(instance , selector.apply(instance)));
+            this.reference = Optional.of(new Reference<>(instance, selector.apply(instance)));
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -182,6 +181,11 @@ public abstract class Column<T> {
         return this;
     }
 
+    /**
+     * Get the reference to another table.
+     *
+     * @return The reference object.
+     */
     public Optional<Reference<?, T>> getReference() {
         return reference;
     }
