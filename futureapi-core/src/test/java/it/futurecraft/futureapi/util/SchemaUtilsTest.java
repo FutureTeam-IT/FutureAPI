@@ -16,34 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.futurecraft.futureapi.utils;
+package it.futurecraft.futureapi.util;
 
 import it.futurecraft.futureapi.database.Database;
 import it.futurecraft.futureapi.database.schema.Column;
 import it.futurecraft.futureapi.database.schema.Table;
 import it.futurecraft.futureapi.files.ConfigModel.DatabaseInfo;
-import it.futurecraft.futureapi.util.SchemaUtils;
 import org.junit.jupiter.api.Test;
 
 public class SchemaUtilsTest {
     public static Database db;
 
     static {
-        DatabaseInfo connectionInfo = new DatabaseInfo(
-                "localhost",
-                3306L,
-                "futureapi",
-                "root",
-                "EhfEHC0rZwb4C@Nn",     // It's a development db hosted in local, don't try to do shit, port is blocked.
-                null
-        );
+        DatabaseInfo connectionInfo = new DatabaseInfo("localhost", 3306L, "futureapi", "root", "EhfEHC0rZwb4C@Nn",     // It's a development db hosted in local, don't try to do shit, port is blocked.
+                null);
 
         db = Database.connect(connectionInfo);
     }
 
     @Test
     public void testCreate() throws Throwable {
-        SchemaUtils.create(db, PluginPlayer.class);
+        SchemaUtils.create(db, PluginPlayer.class, Invite.class);
     }
 
     public static class PluginPlayer extends Table {
@@ -52,6 +45,15 @@ public class SchemaUtilsTest {
         Column<String> uuid = character("uuid", 36).notNull().unique();
 
         public PluginPlayer() {
+        }
+    }
+
+    public static class Invite extends Table {
+        Column<Integer> id = integer("id").notNull().primaryKey();
+        Column<Integer> referredId = integer("referred_id").notNull().references(PluginPlayer.class, t -> t.id);
+        Column<Integer> authorId = integer("author_id").notNull().references(PluginPlayer.class, t -> t.id);
+
+        public Invite() {
         }
     }
 }
