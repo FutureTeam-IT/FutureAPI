@@ -40,7 +40,26 @@ public final class SchemaUtils {
         return clazz.getConstructor().newInstance();
     }
 
+    /**
+     * Create the schema of the table without skipping foreign keys.
+     * @param db The db where to create the schemas in.
+     * @param schema The schemas to create.
+     * @param <T> The table type.
+     * @throws Throwable If any SQL Error occurs.
+     */
     public static <T extends Table> void create(@NotNull Database db, @NotNull Class<T> schema) throws Throwable {
+        create(db, schema, false);
+    }
+
+    /**
+     * Create the schema of the table.
+     * @param db The db where to create the schemas in.
+     * @param schema The schemas to create.
+     * @param skipReferences Whether it should skip the creation of foreign keys.
+     * @param <T> The table type.
+     * @throws Throwable If any SQL Error occurs.
+     */
+    public static <T extends Table> void create(@NotNull Database db, @NotNull Class<T> schema, boolean skipReferences) throws Throwable {
         StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + db.getPrefix().orElse(""));
         T instance = initTable(schema);
 
@@ -82,22 +101,14 @@ public final class SchemaUtils {
             query.append(")");
         }
 
-        if (instance.getForeignKeys().size() > 0) {
-            index.set(0);
-
-            query.append(", ");
-            instance.getForeignKeys().forEach(entry -> {
-                query.append("FOREIGN KEY(")
-                        .append(entry.getKey())
-                        .append(") ")
-                        .append(entry.getValue());
-
-                if (index.get() < instance.getForeignKeys().size() - 1) {
-                    query.append(", ");
-                }
-
-                index.getAndIncrement();
-            });
+        if (!skipReferences) {
+            instance.getForeignKeys().forEach(entry -> query.append(", CONSTRAINT FK_")
+                    .append(StringUtils.toPascalCase(entry.getKey()))
+                    .append(" FOREIGN KEY(")
+                    .append(entry.getKey())
+                    .append(") ")
+                    .append(entry.getValue())
+            );
         }
 
         query.append(");");
@@ -111,9 +122,43 @@ public final class SchemaUtils {
         });
     }
 
+    /**
+     * Create the schema of multiple tables.
+     *
+     * @param db The db where to create the schemas in.
+     * @param schemas The schemas to create.
+     * @throws Throwable if any SQL Error occurs.
+     */
     @SafeVarargs
     public static void create(@NotNull Database db, Class<? extends Table>... schemas) throws Throwable {
-        for (Class<? extends Table> clazz : schemas) create(db, clazz);
+        for (Class<? extends Table> clazz : schemas) create(db, clazz, true);
+
+        StringBuilder query = new StringBuilder();
+        for (Class<? extends Table> clazz : schemas) {
+            Table instance = initTable(clazz);
+
+            instance.getForeignKeys().forEach(entry -> {
+                query.append("ALTER TABLE ")
+                        .append(instance.getName())
+                        .append(" ADD CONSTRAINT Fk_")
+                        .append(StringUtils.toPascalCase(entry.getKey()))
+                        .append(" FOREIGN KEY(")
+                        .append(entry.getKey())
+                        .append(") ")
+                        .append(entry.getValue())
+                        .append(";\n");
+            });
+        }
+
+        db.withTransaction(t -> {
+            try (Statement stmt = t.getConnection().createStatement()) {
+                for (String alter : query.toString().split("\\n")) {
+                    stmt.executeUpdate(alter);
+                }
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        });
     }
 
     public static void update(Class<? extends Table> schema) {

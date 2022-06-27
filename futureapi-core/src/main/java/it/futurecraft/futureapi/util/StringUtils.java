@@ -45,4 +45,27 @@ public final class StringUtils {
 
         return stringBuilder.toString();
     }
+
+    public static String toPascalCase(String string) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
+
+            if (i == 0) {
+                stringBuilder.append(Character.toUpperCase(c));
+                continue;
+            }
+
+            if (c == '_') {
+                c = string.charAt(++i);
+                stringBuilder.append(Character.toUpperCase(c));
+                continue;
+            }
+
+            stringBuilder.append(c);
+        }
+
+        return stringBuilder.toString();
+    }
 }
