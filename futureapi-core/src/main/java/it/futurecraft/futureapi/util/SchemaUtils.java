@@ -119,7 +119,7 @@ public final class SchemaUtils {
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
-        });
+        }).get();
     }
 
     /**
@@ -158,7 +158,7 @@ public final class SchemaUtils {
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
-        });
+        }).get();
     }
 
     public static void update(Class<? extends Table> schema) {

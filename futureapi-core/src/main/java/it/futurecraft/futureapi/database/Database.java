@@ -24,7 +24,10 @@ import it.futurecraft.futureapi.files.ConfigModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -92,16 +95,26 @@ public final class Database {
      * @param consumer The consumer to be executed.
      * @return The transaction value.
      */
-    public <T> T withTransaction(Function<Transaction, T> consumer) throws Exception {
-        try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
-            return consumer.apply(transaction);
-        }
+    public <T> CompletableFuture<T> withTransaction(Function<Transaction, T> consumer) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
+                return consumer.apply(transaction);
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        });
     }
 
-    public void withTransaction(Consumer<Transaction> consumer) throws Exception {
-        try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
-            consumer.accept(transaction);
-        }
+    public CompletableFuture<Void> withTransaction(Consumer<Transaction> consumer) {
+        return CompletableFuture.runAsync(() -> {
+            try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
+                consumer.accept(transaction);
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
