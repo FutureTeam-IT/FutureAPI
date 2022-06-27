@@ -28,8 +28,14 @@ public class SchemaUtilsTest {
     public static Database db;
 
     static {
-        DatabaseInfo connectionInfo = new DatabaseInfo("localhost", 3306L, "futureapi", "root", "EhfEHC0rZwb4C@Nn",     // It's a development db hosted in local, don't try to do shit, port is blocked.
-                null);
+        DatabaseInfo connectionInfo = new DatabaseInfo(
+                "localhost",
+                3306L,
+                "futureapi",
+                "root",
+                "EhfEHC0rZwb4C@Nn",     // It's a development db hosted in local, don't try to do shit, port is blocked.
+                null
+        );
 
         db = Database.connect(connectionInfo);
     }
@@ -49,9 +55,16 @@ public class SchemaUtilsTest {
     }
 
     public static class Invite extends Table {
-        Column<Integer> id = integer("id").notNull().primaryKey();
-        Column<Integer> referredId = integer("referred_id").notNull().references(PluginPlayer.class, t -> t.id);
-        Column<Integer> authorId = integer("author_id").notNull().references(PluginPlayer.class, t -> t.id);
+        Column<Integer> referredId = integer("referred_id")
+                .notNull()
+                .unique()
+                .primaryKey()
+                .references(PluginPlayer.class, t -> t.id);
+
+        Column<Integer> authorId = integer("author_id")
+                .notNull()
+                .primaryKey()
+                .references(PluginPlayer.class, t -> t.id);
 
         public Invite() {
         }

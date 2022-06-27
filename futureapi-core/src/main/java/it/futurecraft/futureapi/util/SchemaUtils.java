@@ -19,13 +19,12 @@
 package it.futurecraft.futureapi.util;
 
 import it.futurecraft.futureapi.database.Database;
-import it.futurecraft.futureapi.database.schema.Column;
-import it.futurecraft.futureapi.database.schema.Reference;
 import it.futurecraft.futureapi.database.schema.Table;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Utility class for schema management.
@@ -33,8 +32,6 @@ import java.sql.Statement;
  * <p>You can also get the current schema version of a table.</p>
  */
 public final class SchemaUtils {
-    // TODO: Implements versioning logic.
-
     private SchemaUtils() {
         throw new IllegalAccessError("Utility class should not be instantiated.");
     }
@@ -43,50 +40,64 @@ public final class SchemaUtils {
         return clazz.getConstructor().newInstance();
     }
 
-    public static <T extends Table> void create(@NotNull Database db, Class<T> clazz) throws Throwable {
+    public static <T extends Table> void create(@NotNull Database db, @NotNull Class<T> schema) throws Throwable {
         StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + db.getPrefix().orElse(""));
-        T instance = initTable(clazz);
+        T instance = initTable(schema);
 
-        // Set the table name
         query.append(instance.getName()).append("(");
 
-        // Initialize every column
-        for (Column<?> column : instance.getColumns()) {
-            query.append("" + column.getName()); // Set column name
-            query.append(" ").append(column.getType()); // Add the column type
+        AtomicInteger index = new AtomicInteger();
+        instance.getColumns().forEach(column -> {
+            query.append(column.getName()).append(" ").append(column.getType());
 
-            // Checks whether the column should never be null
             if (!column.isNullable()) {
                 query.append(" NOT NULL");
             }
 
-            // Checks whether the column value's unique
             if (column.isUnique()) {
                 query.append(" UNIQUE");
             }
 
-            query.append(", ");
+            if (index.get() < instance.getColumns().size() - 1) {
+                query.append(", ");
+            }
 
-            column.getReference().ifPresent(reference -> query.append("FOREIGN KEY(")
-                    .append(column.getName())
-                    .append(") ")
-                    .append(reference)
-                    .append(", ")
-            );
-        }
+            index.getAndIncrement();
+        });
 
         if (instance.getPrimaryKeys().size() > 0) {
-            query.append("PRIMARY KEY(");
+            index.set(0);
 
-            int columnIndex = 0;
-            for (String column : instance.getPrimaryKeys()) {
-                query.append(column);
+            query.append(", PRIMARY KEY(");
+            instance.getPrimaryKeys().forEach(key -> {
+                query.append(key);
 
-                if (columnIndex < instance.getPrimaryKeys().size() - 1) {
+                if (index.get() < instance.getPrimaryKeys().size() - 1) {
                     query.append(", ");
                 }
-            }
+
+                index.getAndIncrement();
+            });
+
             query.append(")");
+        }
+
+        if (instance.getForeignKeys().size() > 0) {
+            index.set(0);
+
+            query.append(", ");
+            instance.getForeignKeys().forEach(entry -> {
+                query.append("FOREIGN KEY(")
+                        .append(entry.getKey())
+                        .append(") ")
+                        .append(entry.getValue());
+
+                if (index.get() < instance.getForeignKeys().size() - 1) {
+                    query.append(", ");
+                }
+
+                index.getAndIncrement();
+            });
         }
 
         query.append(");");
@@ -101,17 +112,20 @@ public final class SchemaUtils {
     }
 
     @SafeVarargs
-    public static void create(@NotNull Database db, Class<? extends Table>... classes) throws Throwable {
-        for (Class<? extends Table> clazz : classes) create(db, clazz);
+    public static void create(@NotNull Database db, Class<? extends Table>... schemas) throws Throwable {
+        for (Class<? extends Table> clazz : schemas) create(db, clazz);
     }
 
-    public static void update(Class<? extends Table> table) {
+    public static void update(Class<? extends Table> schema) {
+        // TODO: Implement
     }
 
-    public static void delete(Class<? extends Table> table) {
+    public static void delete(Class<? extends Table> schema) {
+        // TODO: Implement
     }
 
-    public static String getSchemaVersion(Class<? extends Table> table) {
+    public static String getSchemaVersion(Class<? extends Table> schema) {
+        // TODO: Implement
         return "";
     }
 }

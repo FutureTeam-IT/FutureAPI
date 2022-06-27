@@ -18,16 +18,18 @@
 
 package it.futurecraft.futureapi.database.schema;
 
+import com.google.gson.internal.LinkedHashTreeMap;
 import it.futurecraft.futureapi.database.schema.annotations.Named;
 import it.futurecraft.futureapi.database.schema.types.*;
+import it.futurecraft.futureapi.database.schema.types.Date;
+import it.futurecraft.futureapi.util.SchemaUtils;
 import it.futurecraft.futureapi.util.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * A table in the database.
@@ -40,10 +42,12 @@ public abstract class Table {
     private final String name;
     private final Set<Column<?>> columns;
     private final Set<String> primaryKeys;
+    private final Map<String, Reference<?, ?>> foreignKeys;
 
     public Table() {
         this.columns = new HashSet<>();
         this.primaryKeys = new HashSet<>();
+        this.foreignKeys = new HashMap<>();
 
         Class<? extends Table> clazz = getClass();
         if (clazz.isAnnotationPresent(Named.class)) {
@@ -81,6 +85,16 @@ public abstract class Table {
      */
     public List<String> getPrimaryKeys() {
         return primaryKeys.stream().toList();
+    }
+
+    /**
+     * Get an immutable list of the foreign keys of the table.
+     * Foreign keys are used to create a link to another table, by a reference to its primary key.
+     *
+     * @return The foreign keys of the table.
+     */
+    public List<Map.Entry<String, Reference<?, ?>>> getForeignKeys() {
+        return foreignKeys.entrySet().stream().toList();
     }
 
     /**
@@ -198,7 +212,7 @@ public abstract class Table {
         return register(new ColumnExtension<>(name, new FixedChar()));
     }
 
-    class ColumnExtension<T> extends Column<T> {
+    final class ColumnExtension<T> extends Column<T> {
         public ColumnExtension(String name, ColumnType<T> type) {
             super(name, type);
         }
@@ -207,6 +221,18 @@ public abstract class Table {
         public Column<T> primaryKey(boolean primaryKey) {
             if (primaryKey) {
                 Table.this.primaryKeys.add(this.name);
+            }
+
+            return this;
+        }
+
+        @Override
+        public <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector) {
+            try {
+                S instance = SchemaUtils.initTable(table);
+                Table.this.foreignKeys.put(getName(), new Reference<>(instance, selector.apply(instance)));
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
 
             return this;

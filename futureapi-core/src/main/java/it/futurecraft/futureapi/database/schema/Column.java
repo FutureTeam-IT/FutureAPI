@@ -38,14 +38,11 @@ public abstract class Column<T> {
     private boolean unique;
     private boolean nullable;
 
-    private Optional<Reference<?, T>> reference;
-
     public Column(String name, ColumnType<T> type) {
         this.name = name;
         this.type = type;
         this.unique = false;
         this.nullable = true;
-        this.reference = Optional.empty();
     }
 
     /**
@@ -164,29 +161,12 @@ public abstract class Column<T> {
 
     /**
      * Create a reference to another table.
+     * Pay attention, the table referenced schema should already be created when creating this table schema.
      *
      * @param table    The table to reference.
      * @param selector The selector for the column to reference.
      * @param <S>      The table type.
      * @return The column.
      */
-    public <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector) {
-        try {
-            S instance = SchemaUtils.initTable(table);
-            this.reference = Optional.of(new Reference<>(instance, selector.apply(instance)));
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        return this;
-    }
-
-    /**
-     * Get the reference to another table.
-     *
-     * @return The reference object.
-     */
-    public Optional<Reference<?, T>> getReference() {
-        return reference;
-    }
+    public abstract <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector);
 }
