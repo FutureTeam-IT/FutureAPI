@@ -18,6 +18,7 @@
 
 package it.futurecraft.futureapi.database.schema;
 
+import it.futurecraft.futureapi.database.entity.Entity;
 import it.futurecraft.futureapi.util.SchemaUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -168,5 +169,5 @@ public abstract class Column<T> {
      * @param <S>      The table type.
      * @return The column.
      */
-    public abstract <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector);
+    public abstract <S extends Table<?>> Column<T> references(Class<S> table, Function<S, Column<T>> selector);
 }

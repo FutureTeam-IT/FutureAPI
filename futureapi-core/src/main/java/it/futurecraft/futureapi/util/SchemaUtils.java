@@ -36,7 +36,7 @@ public final class SchemaUtils {
         throw new IllegalAccessError("Utility class should not be instantiated.");
     }
 
-    public static <T extends Table> T initTable(Class<T> clazz) throws Exception {
+    public static <T extends Table<?>> T initTable(Class<T> clazz) throws Exception {
         return clazz.getConstructor().newInstance();
     }
 
@@ -47,7 +47,7 @@ public final class SchemaUtils {
      * @param <T> The table type.
      * @throws Throwable If any SQL Error occurs.
      */
-    public static <T extends Table> void create(@NotNull Database db, @NotNull Class<T> schema) throws Throwable {
+    public static <T extends Table<?>> void create(@NotNull Database db, @NotNull Class<T> schema) throws Throwable {
         create(db, schema, false);
     }
 
@@ -59,7 +59,7 @@ public final class SchemaUtils {
      * @param <T> The table type.
      * @throws Throwable If any SQL Error occurs.
      */
-    public static <T extends Table> void create(@NotNull Database db, @NotNull Class<T> schema, boolean skipReferences) throws Throwable {
+    public static <T extends Table<?>> void create(@NotNull Database db, @NotNull Class<T> schema, boolean skipReferences) throws Throwable {
         StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + db.getPrefix().orElse(""));
         T instance = initTable(schema);
 
@@ -134,8 +134,8 @@ public final class SchemaUtils {
         for (Class<? extends Table> clazz : schemas) create(db, clazz, true);
 
         StringBuilder query = new StringBuilder();
-        for (Class<? extends Table> clazz : schemas) {
-            Table instance = initTable(clazz);
+        for (Class<? extends Table<?>> clazz : schemas) {
+            Table<?> instance = initTable(clazz);
 
             instance.getForeignKeys().forEach(entry -> {
                 query.append("ALTER TABLE ")

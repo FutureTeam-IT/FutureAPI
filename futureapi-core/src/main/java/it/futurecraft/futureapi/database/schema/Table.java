@@ -19,11 +19,13 @@
 package it.futurecraft.futureapi.database.schema;
 
 import com.google.gson.internal.LinkedHashTreeMap;
+import it.futurecraft.futureapi.database.entity.Entity;
 import it.futurecraft.futureapi.database.schema.annotations.Named;
 import it.futurecraft.futureapi.database.schema.types.*;
 import it.futurecraft.futureapi.database.schema.types.Date;
 import it.futurecraft.futureapi.util.SchemaUtils;
 import it.futurecraft.futureapi.util.StringUtils;
+import it.futurecraft.futureapi.util.TypeReference;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
@@ -38,7 +40,7 @@ import java.util.function.Function;
  *
  * @see Named
  */
-public abstract class Table {
+public abstract class Table<E extends Entity<E>> extends TypeReference<E> {
     private final String name;
     private final Set<Column<?>> columns;
     private final Set<String> primaryKeys;
@@ -227,7 +229,7 @@ public abstract class Table {
         }
 
         @Override
-        public <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector) {
+        public <S extends Table<?>> Column<T> references(Class<S> table, Function<S, Column<T>> selector) {
             try {
                 S instance = SchemaUtils.initTable(table);
                 Table.this.foreignKeys.put(getName(), new Reference<>(instance, selector.apply(instance)));
