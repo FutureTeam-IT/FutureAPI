@@ -169,5 +169,5 @@ public abstract class Column<T> {
      * @param <S>      The table type.
      * @return The column.
      */
-    public abstract <S extends Table<?>> Column<T> references(Class<S> table, Function<S, Column<T>> selector);
+    public abstract <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector);
 }
