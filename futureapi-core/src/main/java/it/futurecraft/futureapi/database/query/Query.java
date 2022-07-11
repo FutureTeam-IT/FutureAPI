@@ -27,12 +27,14 @@ import it.futurecraft.futureapi.database.schema.Table;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
@@ -124,8 +126,33 @@ public class Query {
      */
     public CompletableFuture<Void> execute() {
         return database.withTransaction(t -> {
-            try (Connection connection = t.getConnection(); Statement stmt = connection.createStatement()) {
-                this.rs = stmt.executeQuery(this.toString());
+            try (Connection connection = t.getConnection(); PreparedStatement stmt = connection.prepareStatement(this.toString())) {
+                AtomicInteger i = new AtomicInteger(1);
+
+                if (this.where != null) {
+                    this.where.getRoot().set(stmt, i.getAndIncrement());
+                    this.where.getNodes().forEach(n -> {
+                        try {
+                            n.getFirst().set(stmt, i.getAndIncrement());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+
+                if (this.groupBy != null) {
+                    Condition having = this.groupBy.having();
+                    having.getRoot().set(stmt, i.getAndIncrement());
+                    having.getNodes().forEach(n -> {
+                        try {
+                            n.getFirst().set(stmt, i.getAndIncrement());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+
+                this.rs = stmt.executeQuery();
             } catch (Exception e) {
                 e.printStackTrace();
             }
