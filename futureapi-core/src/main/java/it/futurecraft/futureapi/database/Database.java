@@ -20,6 +20,8 @@ package it.futurecraft.futureapi.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import it.futurecraft.futureapi.database.query.Query;
+import it.futurecraft.futureapi.database.schema.Table;
 import it.futurecraft.futureapi.files.ConfigModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -134,5 +136,9 @@ public final class Database {
      */
     public Optional<String> getPrefix() {
         return Optional.ofNullable(prefix);
+    }
+
+    public <T extends Table> Query.Builder<T> from(Class<T> table) throws Exception {
+        return new Query.Builder<>(this, table.getDeclaredConstructor().newInstance());
     }
 }
