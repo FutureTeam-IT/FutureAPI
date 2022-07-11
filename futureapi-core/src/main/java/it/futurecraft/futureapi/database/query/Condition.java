@@ -67,7 +67,7 @@ public final class Condition {
         nodes.forEach(node ->  sb.append(" ")
                 .append(node.getSecond())
                 .append(" ")
-                .append(node.getFist())
+                .append(node.getFirst())
         );
 
         return sb.toString();

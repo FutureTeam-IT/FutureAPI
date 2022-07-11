@@ -25,11 +25,11 @@ package it.futurecraft.futureapi.util;
  * @param <S> The second object.
  */
 public final class Pair<F, S> {
-    private F fist;
+    private F first;
     private S second;
 
     private Pair(F fist, S second) {
-        this.fist = fist;
+        this.first = fist;
         this.second = second;
     }
 
@@ -49,8 +49,8 @@ public final class Pair<F, S> {
      *
      * @return The fist element.
      */
-    public F getFist() {
-        return fist;
+    public F getFirst() {
+        return first;
     }
 
     /**
@@ -58,8 +58,8 @@ public final class Pair<F, S> {
      *
      * @param value The new value for the fist element.
      */
-    public void setFist(F value) {
-        this.fist = value;
+    public void setFirst(F value) {
+        this.first = value;
     }
 
     /**
