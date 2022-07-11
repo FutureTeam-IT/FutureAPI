@@ -20,6 +20,7 @@ package it.futurecraft.futureapi.database.schema.types;
 
 import it.futurecraft.futureapi.database.schema.ColumnType;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -48,6 +49,11 @@ public class VarChar extends ColumnType<String> {
     @Override
     public String parse(ResultSet resultSet, int index) throws SQLException {
         return resultSet.getString(index);
+    }
+
+    @Override
+    public void set(PreparedStatement statement, int index, String value) throws SQLException {
+        statement.setString(index, value);
     }
 
     @Override

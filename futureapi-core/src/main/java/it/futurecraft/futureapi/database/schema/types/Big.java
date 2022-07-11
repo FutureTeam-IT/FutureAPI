@@ -20,6 +20,7 @@ package it.futurecraft.futureapi.database.schema.types;
 
 import it.futurecraft.futureapi.database.schema.ColumnType;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -32,5 +33,9 @@ public class Big extends ColumnType<Long> {
     @Override
     public Long parse(ResultSet resultSet, int index) throws SQLException {
         return resultSet.getLong(index);
+    }
+
+    public void set(PreparedStatement statement, int index, Long value) throws SQLException {
+        statement.setLong(index, value);
     }
 }

@@ -19,13 +19,15 @@ package it.futurecraft.futureapi.database.query.expressions;
 
 import it.futurecraft.futureapi.database.schema.Column;
 
+import java.sql.PreparedStatement;
+
 public final class Predicate<T> {
-    private final String column;
+    private final Column<T> column;
     private final T value;
 
     private final PredicateOperator operator;
 
-    public Predicate(String column, T value, PredicateOperator operator) {
+    public Predicate(Column<T>  column, T value, PredicateOperator operator) {
         this.column = column;
         this.value = value;
         this.operator = operator;
@@ -40,7 +42,7 @@ public final class Predicate<T> {
      * @return The predicate object.
      */
     public static <T> Predicate<T> eq(Column<T> column, T value) {
-        return new Predicate<>(column.getName(), value, PredicateOperator.EQ);
+        return new Predicate<>(column, value, PredicateOperator.EQ);
     }
 
     /**
@@ -52,7 +54,7 @@ public final class Predicate<T> {
      * @return The predicate object.
      */
     public static <T> Predicate<T> neq(Column<T> column, T value) {
-        return new Predicate<>(column.getName(), value, PredicateOperator.NEQ);
+        return new Predicate<>(column, value, PredicateOperator.NEQ);
     }
 
     /**
@@ -64,7 +66,7 @@ public final class Predicate<T> {
      * @return The predicate object.
      */
     public static <T> Predicate<T> gt(Column<T> column, T value) {
-        return new Predicate<>(column.getName(), value, PredicateOperator.GT);
+        return new Predicate<>(column, value, PredicateOperator.GT);
     }
 
     /**
@@ -76,7 +78,7 @@ public final class Predicate<T> {
      * @return The predicate object.
      */
     public static <T> Predicate<T> gte(Column<T> column, T value) {
-        return new Predicate<>(column.getName(), value, PredicateOperator.GTE);
+        return new Predicate<>(column, value, PredicateOperator.GTE);
     }
 
     /**
@@ -88,7 +90,7 @@ public final class Predicate<T> {
      * @return The predicate object.
      */
     public static <T> Predicate<T> lt(Column<T> column, T value) {
-        return new Predicate<>(column.getName(), value, PredicateOperator.LT);
+        return new Predicate<>(column, value, PredicateOperator.LT);
     }
 
     /**
@@ -100,7 +102,7 @@ public final class Predicate<T> {
      * @return The predicate object.
      */
     public static <T> Predicate<T> lte(Column<T> column, T value) {
-        return new Predicate<>(column.getName(), value, PredicateOperator.LTE);
+        return new Predicate<>(column, value, PredicateOperator.LTE);
     }
 
     /**
@@ -111,7 +113,7 @@ public final class Predicate<T> {
      * @return The predicate object.
      */
     public static <T> Predicate<T> isNull(Column<T> column) {
-        return new Predicate<>(column.getName(), null, PredicateOperator.NULL);
+        return new Predicate<>(column, null, PredicateOperator.NULL);
     }
 
     /**
@@ -122,7 +124,7 @@ public final class Predicate<T> {
      * @return The predicate object.
      */
     public static <T> Predicate<T> notNull(Column<T> column) {
-        return new Predicate<>(column.getName(), null, PredicateOperator.NOTNULL);
+        return new Predicate<>(column, null, PredicateOperator.NOTNULL);
     }
 
     /**
@@ -130,7 +132,7 @@ public final class Predicate<T> {
      *
      * @return The column name.
      */
-    public String getColumn() {
+    public Column<T> getColumn() {
         return column;
     }
 
@@ -152,13 +154,16 @@ public final class Predicate<T> {
         return operator;
     }
 
+    public void set(PreparedStatement statement, int index) throws Exception {
+        column.getType().set(statement, index, value);
+    }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(column).append(" ").append(operator);
+        StringBuilder sb = new StringBuilder(column.getName()).append(" ").append(operator);
 
         if (operator != PredicateOperator.NULL && operator != PredicateOperator.NOTNULL) {
-            sb.append(" ").append(value);
+            sb.append(" ?");
         }
 
         return sb.toString();

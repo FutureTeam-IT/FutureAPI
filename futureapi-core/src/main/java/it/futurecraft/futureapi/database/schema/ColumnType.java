@@ -20,6 +20,7 @@ package it.futurecraft.futureapi.database.schema;
 
 import it.futurecraft.futureapi.util.TypeReference;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -72,6 +73,8 @@ public abstract class ColumnType<T> extends TypeReference<T> {
         int index = resultSet.findColumn(label);
         return parse(resultSet, index);
     }
+
+    public abstract void set(PreparedStatement statement, int index, T value) throws SQLException;
 
     @Override
     public String toString() {

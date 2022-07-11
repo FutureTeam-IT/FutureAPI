@@ -20,6 +20,7 @@ package it.futurecraft.futureapi.database.schema.types;
 
 import it.futurecraft.futureapi.database.schema.ColumnType;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -32,5 +33,10 @@ public class Small extends ColumnType<Short> {
     @Override
     public Short parse(ResultSet resultSet, int index) throws SQLException {
         return resultSet.getShort(index);
+    }
+
+    @Override
+    public void set(PreparedStatement statement, int index, Short value) throws SQLException {
+        statement.setShort(index, value);
     }
 }

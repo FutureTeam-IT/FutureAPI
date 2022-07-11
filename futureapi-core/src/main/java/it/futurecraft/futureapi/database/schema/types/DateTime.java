@@ -20,6 +20,7 @@ package it.futurecraft.futureapi.database.schema.types;
 
 import it.futurecraft.futureapi.database.schema.ColumnType;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -34,5 +35,9 @@ public class DateTime extends ColumnType<LocalDateTime> {
     @Override
     public LocalDateTime parse(ResultSet resultSet, int index) throws SQLException {
         return resultSet.getTimestamp(index).toLocalDateTime();
+    }
+
+    public void set(PreparedStatement statement, int index, LocalDateTime value) throws SQLException {
+        statement.setTimestamp(index, java.sql.Timestamp.valueOf(value));
     }
 }
