@@ -18,13 +18,8 @@
 
 package it.futurecraft.futureapi.database.schema;
 
-import it.futurecraft.futureapi.database.entity.Entity;
-import it.futurecraft.futureapi.util.SchemaUtils;
-import org.jetbrains.annotations.Nullable;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -35,7 +30,6 @@ import java.util.function.Function;
 public abstract class Column<T> {
     protected final String name;
     private final ColumnType<T> type;
-
     private boolean unique;
     private boolean nullable;
 
@@ -169,5 +163,12 @@ public abstract class Column<T> {
      * @param <S>      The table type.
      * @return The column.
      */
-    public abstract <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector);
+    public abstract <S extends Table<?>> Column<T> references(Class<S> table, Function<S, Column<T>> selector);
+
+    /**
+     * Get the table the column belongs to
+     *
+     * @return The table.
+     */
+    public abstract Table<?> getTable();
 }
