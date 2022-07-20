@@ -16,14 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.futurecraft.futureapi.database.query.expressions;
+package it.futurecraft.futureapi.util.functions;
 
-import it.futurecraft.futureapi.database.query.Condition;
-import it.futurecraft.futureapi.database.schema.Column;
-
-public record Group(Column<?> column, Condition having) {
-    @Override
-    public String toString() {
-        return "GROUP BY " + column.getName() + " HAVING " + having;
-    }
+@FunctionalInterface
+public interface ThrowingFunction<T, R> {
+    R apply(T t) throws Exception;
 }

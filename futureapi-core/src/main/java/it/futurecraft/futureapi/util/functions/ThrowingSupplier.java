@@ -16,7 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.futurecraft.futureapi.database.entity;
+package it.futurecraft.futureapi.util.functions;
 
-public record Binding(String property, String column) {
+/**
+ * Represents a supplier of results which throws errors.
+ *
+ * <p>There is no requirement that a new or distinct result be returned each
+ * time the supplier is invoked.
+ *
+ * <p>This is a functional interface  * whose functional method is {@link #get()}.
+ *
+ * @param <R> the type of results supplied by this supplier
+ */
+@FunctionalInterface
+public interface ThrowingSupplier<R> {
+    R get() throws Exception;
 }
