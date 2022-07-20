@@ -38,5 +38,5 @@ public interface TransactionManager {
      *
      * @return The new transaction.
      */
-    Transaction newTransaction() throws SQLException;
+    Transaction newTransaction() throws Exception;
 }

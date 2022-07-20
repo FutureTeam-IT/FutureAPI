@@ -18,15 +18,17 @@
 
 package it.futurecraft.futureapi.database;
 
+import it.futurecraft.futureapi.util.functions.ThrowingSupplier;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
 final class TransactionManagerImpl implements TransactionManager {
     private final ThreadLocal<Transaction> transaction;
-    private final ConnectionSupplier supplier;
+    private final ThrowingSupplier<Connection> supplier;
 
-    public TransactionManagerImpl(ConnectionSupplier supplier) {
+    public TransactionManagerImpl(ThrowingSupplier<Connection> supplier) {
         this.transaction = new ThreadLocal<>();
         this.supplier = supplier;
     }
@@ -37,19 +39,15 @@ final class TransactionManagerImpl implements TransactionManager {
     }
 
     @Override
-    public Transaction newTransaction() throws SQLException {
+    public Transaction newTransaction() throws Exception {
         if (transaction.get() != null) {
-            return transaction.get();
+            throw new IllegalStateException("This thread already own an open transaction.");
         }
 
-            Transaction transaction = new TransactionImpl(supplier.get());
-            this.transaction.set(transaction);
+        Transaction transaction = new TransactionImpl(supplier.get());
+        this.transaction.set(transaction);
 
         return transaction;
-    }
-
-    public interface ConnectionSupplier {
-        Connection get() throws SQLException;
     }
 
     private final class TransactionImpl implements Transaction {
