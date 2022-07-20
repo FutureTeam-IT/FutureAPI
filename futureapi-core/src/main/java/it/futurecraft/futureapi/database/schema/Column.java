@@ -166,7 +166,7 @@ public abstract class Column<T> {
     public abstract <S extends Table<?>> Column<T> references(Class<S> table, Function<S, Column<T>> selector);
 
     /**
-     * Get the table the column belongs to
+     * Get the table the column belongs to.
      *
      * @return The table.
      */
