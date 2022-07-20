@@ -20,18 +20,14 @@ package it.futurecraft.futureapi.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import it.futurecraft.futureapi.database.query.Query;
-import it.futurecraft.futureapi.database.schema.Table;
 import it.futurecraft.futureapi.files.ConfigModel;
+import it.futurecraft.futureapi.util.functions.ThrowingConsumer;
+import it.futurecraft.futureapi.util.functions.ThrowingFunction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Plugin database connection.
@@ -97,11 +93,11 @@ public final class Database {
      * @param consumer The consumer to be executed.
      * @return The transaction value.
      */
-    public <T> CompletableFuture<T> withTransaction(Function<Transaction, T> consumer) {
+    public <T> CompletableFuture<T> withTransaction(ThrowingFunction<Transaction, T> consumer) {
         return CompletableFuture.supplyAsync(() -> {
             try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
                 return consumer.apply(transaction);
-            } catch (SQLException | IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -109,11 +105,11 @@ public final class Database {
         });
     }
 
-    public CompletableFuture<Void> withTransaction(Consumer<Transaction> consumer) {
+    public CompletableFuture<Void> withTransaction(ThrowingConsumer<Transaction> consumer) {
         return CompletableFuture.runAsync(() -> {
             try (Transaction transaction = transactionManager.current().orElse(transactionManager.newTransaction())) {
                 consumer.accept(transaction);
-            } catch (SQLException | IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -136,9 +132,5 @@ public final class Database {
      */
     public Optional<String> getPrefix() {
         return Optional.ofNullable(prefix);
-    }
-
-    public <T extends Table> Query.Builder<T> from(Class<T> table) throws Exception {
-        return new Query.Builder<>(this, table.getDeclaredConstructor().newInstance());
     }
 }
