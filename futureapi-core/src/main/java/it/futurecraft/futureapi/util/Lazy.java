@@ -17,6 +17,7 @@
  */
 
 package it.futurecraft.futureapi.util;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -28,7 +29,13 @@ import java.util.function.Supplier;
  *
  * @param <T> The type of the resource.
  */
-public interface Lazy<T> {
+public abstract class Lazy<T> {
+    protected T value;
+
+    private Lazy() {
+        this.value = null;
+    }
+
     /**
      * Create a new lazy resource.
      *
@@ -36,7 +43,7 @@ public interface Lazy<T> {
      * @param <T>      The type of the resource.
      * @return The lazy resource.
      */
-    static <T> Lazy<T> by(Supplier<T> supplier) {
+    public static <T> Lazy<T> by(Supplier<T> supplier) {
         return new SynchronousLazy<>(supplier);
     }
 
@@ -44,10 +51,10 @@ public interface Lazy<T> {
      * Create a new lazy resource initialized asynchronously.
      *
      * @param future The initializer of the resource.
-     * @param <T>      The type of the resource.
+     * @param <T>    The type of the resource.
      * @return The lazy resource.
      */
-    static <T> Lazy<T> by(CompletableFuture<T> future) {
+    public static <T> Lazy<T> by(CompletableFuture<T> future) {
         return new AsynchronousLazy<>(future);
     }
 
@@ -56,11 +63,17 @@ public interface Lazy<T> {
      *
      * @return The resource.
      */
-    T get();
+    @Nullable public abstract T get();
 
-    class SynchronousLazy<T> implements Lazy<T> {
+    /**
+     * Resets the value of the resource.
+     */
+    void reset() {
+        this.value = null;
+    }
+
+    public static class SynchronousLazy<T> extends Lazy<T> {
         private final Supplier<T> supplier;
-        private T value;
 
         public SynchronousLazy(Supplier<T> supplier) {
             this.supplier = supplier;
@@ -68,16 +81,15 @@ public interface Lazy<T> {
 
         @Override
         public T get() {
-            if (value == null) {
-                value = supplier.get();
+            if (super.value == null) {
+                super.value = supplier.get();
             }
-            return value;
+            return super.value;
         }
     }
 
-    class AsynchronousLazy<T> implements Lazy<T> {
+    public static class AsynchronousLazy<T> extends Lazy<T> {
         private final CompletableFuture<T> supplier;
-        private T value = null;
 
         public AsynchronousLazy(CompletableFuture<T> supplier) {
             this.supplier = supplier;
@@ -85,15 +97,15 @@ public interface Lazy<T> {
 
         @Override
         public T get() {
-            if (value == null) {
+            if (super.value == null) {
                 try {
-                    value = supplier.get();
+                    super.value = supplier.get();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
 
-            return value;
+            return super.value;
         }
     }
 }
