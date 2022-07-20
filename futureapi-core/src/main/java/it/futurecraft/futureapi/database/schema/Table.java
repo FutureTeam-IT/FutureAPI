@@ -20,9 +20,8 @@ package it.futurecraft.futureapi.database.schema;
 
 import it.futurecraft.futureapi.database.entity.Entity;
 import it.futurecraft.futureapi.database.schema.annotations.Named;
-import it.futurecraft.futureapi.database.schema.types.*;
 import it.futurecraft.futureapi.database.schema.types.Date;
-import it.futurecraft.futureapi.util.SchemaUtils;
+import it.futurecraft.futureapi.database.schema.types.*;
 import it.futurecraft.futureapi.util.StringUtils;
 import it.futurecraft.futureapi.util.TypeReference;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +38,7 @@ import java.util.function.Function;
  *
  * @see Named
  */
-public abstract class Table {
+public abstract class Table<E extends Entity<E>> extends TypeReference<E> {
     private final String name;
     private final Set<Column<?>> columns;
     private final Set<String> primaryKeys;
@@ -213,6 +212,19 @@ public abstract class Table {
         return register(new ColumnExtension<>(name, new FixedChar()));
     }
 
+    /**
+     * Register a new boolean column in the table.
+     *
+     * @param name The name of the column.
+     * @return The new column.
+     */
+    public Column<Boolean> bool(String name) {
+        return register(new ColumnExtension<>(name, new Bool()));
+    }
+
+    public <T> void bind(Column<T> column, Function<E, T> selector) {
+    }
+
     final class ColumnExtension<T> extends Column<T> {
         public ColumnExtension(String name, ColumnType<T> type) {
             super(name, type);
@@ -228,15 +240,13 @@ public abstract class Table {
         }
 
         @Override
-        public <S extends Table> Column<T> references(Class<S> table, Function<S, Column<T>> selector) {
-            try {
-                S instance = SchemaUtils.initTable(table);
-                Table.this.foreignKeys.put(getName(), new Reference<>(instance, selector.apply(instance)));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-
+        public <S extends Table<?>> Column<T> references(Class<S> table, Function<S, Column<T>> selector) {
             return this;
+        }
+
+        @Override
+        public Table<?> getTable() {
+            return Table.this;
         }
     }
 }
